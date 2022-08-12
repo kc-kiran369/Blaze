@@ -1,0 +1,11 @@
+
+/bin
+/int
+/External
+
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.vs
+*.ini
