@@ -10,8 +10,11 @@ Texture::Texture(const char* path, unsigned int slot)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	int width, height, channel;
-	stbi_set_flip_vertically_on_load(true);
+	//stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(path, &width, &height, &channel, 0);
+	m_Width = width;
+	m_Height = height;
+	m_Channel = channel;
 	glTexImage2D(GL_TEXTURE_2D, 0, (channel == 3 ? GL_RGB : GL_RGBA), width, height, 0, (channel == 3 ? GL_RGB : GL_RGBA), GL_UNSIGNED_BYTE, data);
 	glActiveTexture(GL_TEXTURE0 + slot);
 	glGenerateMipmap(GL_TEXTURE_2D);
@@ -19,7 +22,6 @@ Texture::Texture(const char* path, unsigned int slot)
 		stbi_image_free(data);
 	else
 		std::cout << "Image Not loaded..." << std::endl;
-
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -41,4 +43,19 @@ void Texture::UnBind()
 unsigned int Texture::GetRendererID()
 {
 	return m_RendererID;
+}
+
+unsigned int Texture::GetWidth()
+{
+	return m_Width;
+}
+
+unsigned int Texture::GetHeight()
+{
+	return m_Height;
+}
+
+unsigned int Texture::GetChannel()
+{
+	return m_Channel;
 }

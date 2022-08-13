@@ -2,6 +2,7 @@
 
 CoreUI::CoreUI()
 {
+	
 }
 
 void CoreUI::OnAttach(GLFWwindow* window)
