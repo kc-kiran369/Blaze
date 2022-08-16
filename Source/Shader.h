@@ -3,6 +3,8 @@
 
 #include<string>
 #include"glew/glew.h"
+#include"glm/matrix.hpp"
+#include"ShaderUtils.h"
 
 class Shader
 {
@@ -15,6 +17,7 @@ public:
 	void Activate();
 	void DeActivate();
 	void Delete();
+
 };
 
 #endif

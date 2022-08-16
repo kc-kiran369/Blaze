@@ -28,7 +28,7 @@ public:
 	Camera(int _width, int _height, glm::vec3 _position);
 
 	void UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane);
-	//void Matrix(Shader& shader, const char* uniform, const float* modelMat);
+	void SendMVP(Shader& shader, const char* uniform, const float* modelMat);
 	void Input(GLFWwindow* window);
 };
 #endif

@@ -19,11 +19,11 @@ void Camera::UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane)
 	cameraMatrix = projection * view;
 }
 
-//void Camera::Matrix(Shader& shader, const char* uniform, const float* modelMat)
-//{
-//	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, modelMat);
-//	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
-//}
+void Camera::SendMVP(Shader& shader, const char* uniform, const float* modelMat)
+{
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, modelMat);
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+}
 
 void Camera::Input(GLFWwindow* window)
 {

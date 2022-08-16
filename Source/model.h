@@ -1,11 +1,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-//#include <string>
-//#include <fstream>
-//#include <sstream>
 #include <iostream>
-//#include <map>
 #include <vector>
 
 #include <GLEW/glew.h>
@@ -28,7 +24,7 @@ public:
 	Model();
 	~Model();
 	void loadModel(std::string path);
-	void Draw();
+	void Draw(Shader shader);
 
 private:
 	std::vector<Mesh> meshes;
@@ -36,5 +32,6 @@ private:
 
 	void processNode(aiNode* node, const aiScene* scene);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+	std::vector<Texture> loadTextures(aiMaterial* mat, aiTextureType type);
 };
 #endif

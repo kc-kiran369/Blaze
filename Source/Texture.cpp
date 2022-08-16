@@ -10,7 +10,7 @@ Texture::Texture(const char* path, unsigned int slot)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	int width, height, channel;
-	//stbi_set_flip_vertically_on_load(true);
+	stbi_set_flip_vertically_on_load(false);
 	unsigned char* data = stbi_load(path, &width, &height, &channel, 0);
 	m_Width = width;
 	m_Height = height;
