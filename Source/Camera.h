@@ -14,9 +14,10 @@ class Camera
 {
 public:
 	glm::vec3 Position;
-	glm::vec3 Orientation = glm::vec3(0.0f, 0.0f, -1.0f);
+	glm::vec3 Orientation = glm::vec3(0.0f, 0.0f, 1.0f);
 	glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::mat4 cameraMatrix = glm::mat4(1.0f);
+	glm::mat4 MVP = glm::mat4(1.0f);
 
 	bool firstClick = true;
 
@@ -27,8 +28,7 @@ public:
 
 	Camera(int _width, int _height, glm::vec3 _position);
 
-	void UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane);
-	void SendMVP(Shader& shader, const char* uniform, const float* modelMat);
+	void UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane, glm::mat4& model, Shader& shader);
 	void Input(GLFWwindow* window);
 };
 #endif

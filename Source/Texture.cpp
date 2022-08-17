@@ -22,7 +22,7 @@ Texture::Texture(const char* path, unsigned int slot)
 		stbi_image_free(data);
 	else
 		std::cout << "Image Not loaded..." << std::endl;
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 Texture::~Texture()

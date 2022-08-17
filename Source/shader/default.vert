@@ -9,9 +9,12 @@ out vec3 _normal;
 out vec2 _texCoord;
 
 uniform mat4 MVP;
-uniform mat4 model;
+
 
 void main()
 {
-	gl_Position = vec4(position,1.0f) * MVP*model;	
+	_position = position;
+	_normal = normal;
+	_texCoord = texCoord;
+	gl_Position = MVP*vec4(position,1.0f);	
 }

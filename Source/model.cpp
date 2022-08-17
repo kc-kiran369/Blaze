@@ -29,7 +29,7 @@ void Model::loadModel(std::string path)
 	processNode(scene->mRootNode, scene);
 }
 
-void Model::Draw(Shader shader)
+void Model::Draw(Shader& shader)
 {
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
@@ -89,7 +89,6 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
 		vertices.push_back(vertex);
 	}
-	std::cout << "Vertex Done" << std::endl;
 
 	//Process indices
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -99,7 +98,6 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		for (unsigned int j = 0; j < face.mNumIndices; j++)
 			indices.push_back(face.mIndices[j]);
 	}
-	std::cout << "Indices Done" << std::endl;
 
 	//Process Materials
 	if (mesh->mMaterialIndex >= 0)
@@ -114,18 +112,6 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		std::vector<Texture> specularMaps = loadTextures(material, aiTextureType_SPECULAR);
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 	}
-	std::cout << "Mats Done" << std::endl;
-
-	std::cout << "[Position] x : " << vertex.Position.x;
-	std::cout << " y : " << vertex.Position.y;
-	std::cout << " z : " << vertex.Position.z << std::endl;
-
-	std::cout << "[Normal] x" << vertex.Normal.x;
-	std::cout << " y : " << vertex.Normal.y;
-	std::cout << " z : " << vertex.Normal.z << std::endl;
-
-	std::cout << "[TexCoords] x : " << vertex.TexCoords.x;
-	std::cout << " y : " << vertex.TexCoords.y << std::endl;
 
 	return Mesh(vertices, indices, textures);
 }

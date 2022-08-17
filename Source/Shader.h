@@ -17,7 +17,6 @@ public:
 	void Activate();
 	void DeActivate();
 	void Delete();
-
+	unsigned int GetUniformLocation(const std::string& name);
 };
-
 #endif

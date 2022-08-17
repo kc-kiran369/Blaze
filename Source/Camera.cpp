@@ -8,21 +8,25 @@ Camera::Camera(int _width, int _height, glm::vec3 _position)
 	Position = _position;
 }
 
-void Camera::UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane)
+void Camera::UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane, glm::mat4& model, Shader& shader)
 {
+	//glm::mat4 view = glm::mat4(1.0f);
+	//glm::mat4 projection = glm::mat4(1.0f);
+
+	///*view = glm::lookAt(Position, Position + Orientation, Up);
+	//projection = glm::perspective(glm::radians(_FOVdeg), (float)width / height, _nearPlane, _farPlane);*/
+
+	//cameraMatrix = projection * view;
+
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
 
 	view = glm::lookAt(Position, Position + Orientation, Up);
 	projection = glm::perspective(glm::radians(_FOVdeg), (float)width / height, _nearPlane, _farPlane);
 
-	cameraMatrix = projection * view;
-}
+	MVP = projection * view * model;
 
-void Camera::SendMVP(Shader& shader, const char* uniform, const float* modelMat)
-{
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, modelMat);
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+	glUniformMatrix4fv(shader.GetUniformLocation("MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
 }
 
 void Camera::Input(GLFWwindow* window)
