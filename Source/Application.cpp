@@ -24,25 +24,47 @@ int main()
 	ui.OnAttach(window);
 	glewInit();
 
-	Camera mainCamera(width, height, glm::vec3{ 0.0f, 0.0f, -1.0f });
+	Camera mainCamera(width, height, glm::vec3{ 0.0f, 4.0f, -5.0f });
 
 	Shader shader("Source\\shader\\default.vert", "Source\\shader\\default.frag");
 	Model model;
-	model.loadModel("Resources\\Models\\Land.fbx");
-	Texture texture("Resources\\Images\\Terrain.jpg", 0);
+	model.loadModel("Resources\\Models\\Cube.fbx");
+	Texture texture("Resources\\Images\\MedievalhouseDiffuse.jpg", 0);
 	glActiveTexture(GL_TEXTURE0);
 
 	glm::mat4 _model = glm::mat4(1.0f);
 
-	_model= glm::rotate(_model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	_model = glm::rotate(_model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
 	glEnable(GL_DEPTH_TEST);
 
 	while (!glfwWindowShouldClose(window))
 	{
-		glClear(GL_COLOR_BUFFER_BIT  | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
 		ui.Begin();
 		mainCamera.UpdateMatrix(45.0f, 0.1f, 1000.0f, _model, shader);
+
+		ImGui::BeginMainMenuBar();
+		if (ImGui::BeginMenu("File"))
+		{
+			ImGui::MenuItem("Open");
+			ImGui::MenuItem("Save as");
+			if (ImGui::MenuItem("Exit")) {
+				exit(EXIT_SUCCESS);
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("View"))
+		{
+			ImGui::MenuItem("Hide All Panels");
+			ImGui::MenuItem("Property Panel");
+			ImGui::MenuItem("Grid");
+			ImGui::MenuItem("Zoom in  -");
+			ImGui::MenuItem("Zoom out +");
+			ImGui::MenuItem("Reset Camera +");
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
 
 		model.Draw(shader);
 
