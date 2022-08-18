@@ -31,3 +31,8 @@ unsigned int Shader::GetUniformLocation(const std::string& name)
 	unsigned int location = glGetUniformLocation(ID, name.c_str());
 	return location;
 }
+
+void Shader::SetVec4(float *vec4)
+{
+	glUniform4f(GetUniformLocation("_ambientColor"),vec4[0], vec4[1], vec4[2], vec4[3]);
+}

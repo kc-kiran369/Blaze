@@ -18,7 +18,7 @@ Mesh::~Mesh()
 void Mesh::Draw(Shader& shader)
 {
 	shader.Activate();
-	//glActiveTexture(GL_TEXTURE0);
+	/*std::cout << "Total Textures Count : " << this->textures.size() << std::endl;*/
 	glBindVertexArray(this->VAO);
 	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

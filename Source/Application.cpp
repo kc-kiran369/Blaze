@@ -13,6 +13,7 @@
 int width = 700, height = 700;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
+
 int main()
 {
 	glfwInit();
@@ -23,19 +24,20 @@ int main()
 	CoreUI ui;
 	ui.OnAttach(window);
 	glewInit();
+	glEnable(GL_DEPTH_TEST);
 
 	Camera mainCamera(width, height, glm::vec3{ 0.0f, 4.0f, -5.0f });
 
 	Shader shader("Source\\shader\\default.vert", "Source\\shader\\default.frag");
 	Model model;
-	model.loadModel("Resources\\Models\\Cube.fbx");
+	model.loadModel("Resources\\Models\\Medievalhouse.fbx");
 	Texture texture("Resources\\Images\\MedievalhouseDiffuse.jpg", 0);
 	glActiveTexture(GL_TEXTURE0);
 
 	glm::mat4 _model = glm::mat4(1.0f);
 
 	_model = glm::rotate(_model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
-	glEnable(GL_DEPTH_TEST);
+	float ambientColor[] = { 0.4f,0.4f,0.4f,1.0f };
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -43,6 +45,7 @@ int main()
 		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
 		ui.Begin();
 		mainCamera.UpdateMatrix(45.0f, 0.1f, 1000.0f, _model, shader);
+		shader.SetVec4(ambientColor);
 
 		ImGui::BeginMainMenuBar();
 		if (ImGui::BeginMenu("File"))
@@ -65,6 +68,13 @@ int main()
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
+
+		ImGui::Begin("Lightning");
+		if (ImGui::TreeNode("Basic")) {
+			ImGui::ColorEdit4("Ambient Color", ambientColor);
+			ImGui::TreePop();
+		}
+		ImGui::End();
 
 		model.Draw(shader);
 

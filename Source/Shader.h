@@ -18,5 +18,7 @@ public:
 	void DeActivate();
 	void Delete();
 	unsigned int GetUniformLocation(const std::string& name);
+
+	void SetVec4(float *vec4);
 };
 #endif
