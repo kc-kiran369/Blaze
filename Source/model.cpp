@@ -124,8 +124,6 @@ std::vector<Texture> Model::loadTextures(aiMaterial* mat, aiTextureType type)
 		aiString str;
 		mat->GetTexture(type, i, &str);
 		std::cout << str.C_Str() << std::endl;
-		//std::cout << "1 texture imported" << std::endl;
 	}
-	//std::cout << "Total Textures " << textures.size() << std::endl;
 	return textures;
 }

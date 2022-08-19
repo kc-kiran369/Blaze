@@ -10,14 +10,6 @@ Camera::Camera(int _width, int _height, glm::vec3 _position)
 
 void Camera::UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane, glm::mat4& model, Shader& shader)
 {
-	//glm::mat4 view = glm::mat4(1.0f);
-	//glm::mat4 projection = glm::mat4(1.0f);
-
-	///*view = glm::lookAt(Position, Position + Orientation, Up);
-	//projection = glm::perspective(glm::radians(_FOVdeg), (float)width / height, _nearPlane, _farPlane);*/
-
-	//cameraMatrix = projection * view;
-
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
 
@@ -57,7 +49,7 @@ void Camera::Input(GLFWwindow* window)
 	}
 
 
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		if (firstClick)

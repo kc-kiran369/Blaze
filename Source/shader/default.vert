@@ -10,7 +10,6 @@ out vec2 _texCoord;
 
 uniform mat4 MVP;
 
-
 void main()
 {
 	_position = position;

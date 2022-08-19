@@ -1,14 +1,11 @@
 #include"Shader.h"
 
-
 Shader::Shader(const char* vert_path, const char* frag_path)
 {
-	VertexShader = ParseShader(vert_path);
-	FragmentShader = ParseShader(frag_path);
+	std::string VertexShader = ParseShader(vert_path);
+	std::string FragmentShader = ParseShader(frag_path);
 	ID = CreateShader(VertexShader, FragmentShader);
 	glUseProgram(ID);
-
-	std::cout << "Shader Created : "<< ID<< std::endl;
 }
 
 void Shader::Activate()
