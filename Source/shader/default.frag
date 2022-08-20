@@ -11,5 +11,4 @@ uniform vec4 _ambientColor;
 void main()
 {
 	gl_FragColor = texture(_texture,_texCoord) * _ambientColor;
-	//gl_FragColor = vec4(_normal,1.0f);
 }

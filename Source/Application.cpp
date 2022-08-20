@@ -9,6 +9,8 @@
 #include"Camera.h"
 #include"FrameBuffer.h"
 
+#include<future>
+
 #include"Model.h"
 
 int width = 700, height = 700;
@@ -18,11 +20,6 @@ int main()
 {
 	glfwInit();
 	GLFWwindow* window = glfwCreateWindow(width, height, "Blaze", nullptr, nullptr);
-	/*GLFWimage images[1];
-	images[0].pixels = stbi_load("Resources\\Icon\\Logo.png", &images[0].width, &images[0].height, 0, 4);
-	glfwSetWindowIcon(window, 1, images);
-	stbi_image_free(images[0].pixels);*/
-
 	GLFWimage images;
 	images.pixels = stbi_load("Resources\\Icon\\Logo.png", &images.width, &images.height, 0, 4);
 	glfwSetWindowIcon(window, 1, &images);
@@ -36,13 +33,14 @@ int main()
 
 	Camera mainCamera(width, height, glm::vec3{ 0.0f, 4.0f, -5.0f });
 
+	Texture moveIcon("Resources\\Icon\\MoveIcon.png", NULL);
+	Texture rotateIcon("Resources\\Icon\\RotateIcon.png", NULL);
+	Texture scaleIcon("Resources\\Icon\\ScaleIcon.png", NULL);
+
 	Shader shader("Source\\shader\\default.vert", "Source\\shader\\default.frag");
-	Model model, cube, land, monkey;
-	cube.loadModel("Resources\\Models\\Cube.fbx");
-	land.loadModel("Resources\\Models\\Land.fbx");
-	monkey.loadModel("Resources\\Models\\Monkey.fbx");
+	Model model;
 	Texture texture("Resources\\Images\\MedievalhouseDiffuse.jpg", 0);
-	glBindTexture(GL_TEXTURE_2D, texture.GetRendererID());
+	texture.Bind();
 
 	glm::mat4 _model = glm::mat4(1.0f);
 	_model = glm::rotate(_model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
@@ -57,20 +55,17 @@ int main()
 		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
 		mainCamera.UpdateMatrix(45.0f, 0.1f, 1000.0f, _model, shader);
 
-		shader.SetVec4(ambientColor);
+		shader.SetVec4("_ambientColor", ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
 
 		model.Draw(shader);
-		cube.Draw(shader);
-		land.Draw(shader);
-		monkey.Draw(shader);
 
 		ui.Begin();
 		ImGui::BeginMainMenuBar();
 		if (ImGui::BeginMenu("File"))
 		{
-			ImGui::MenuItem("Open");
-			ImGui::MenuItem("Save as");
-			if (ImGui::MenuItem("Exit")) {
+			ImGui::MenuItem("Open", "Ctrl+o");
+			ImGui::MenuItem("Save as", "Ctrl+s");
+			if (ImGui::MenuItem("Exit", "Ctrl+q")) {
 				exit(EXIT_SUCCESS);
 			}
 			ImGui::EndMenu();
@@ -92,6 +87,7 @@ int main()
 			ImGui::MenuItem("Sphere");
 			if (ImGui::MenuItem("Import Model.."))
 			{
+				//std::async(model->,);
 				model.loadModel("Resources\\Models\\Medievalhouse.fbx");
 			}
 			ImGui::EndMenu();
@@ -102,9 +98,37 @@ int main()
 			ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoMove))
 		{
 			ImGui::SetWindowPos(ImVec2{ 0.0f,30.0f });
-			ImGui::Button("T", ImVec2{ 40.0f,40.0f });
-			ImGui::Button("R", ImVec2{ 40.0f,40.0f });
-			ImGui::Button("S", ImVec2{ 40.0f,40.0f });
+
+			if (ImGui::ImageButton((void*)moveIcon.GetRendererID(), ImVec2{ 20.0f,20.0f }))
+			{
+				std::cout << "Transform Tool Selected" << std::endl;
+			}
+			if (ImGui::IsItemHovered())
+			{
+				ImGui::BeginTooltip();
+				ImGui::TextUnformatted("Move");
+				ImGui::EndTooltip();
+			}
+			if (ImGui::ImageButton((void*)rotateIcon.GetRendererID(), ImVec2{ 20.0f,20.0f }))
+			{
+				std::cout << "Rotate Tool Selected" << std::endl;
+			}
+			if (ImGui::IsItemHovered())
+			{
+				ImGui::BeginTooltip();
+				ImGui::TextUnformatted("Rotate");
+				ImGui::EndTooltip();
+			}
+			if (ImGui::ImageButton((void*)scaleIcon.GetRendererID(), ImVec2{ 20.0f,20.0f }))
+			{
+				std::cout << "Scale Tool Selected" << std::endl;
+			}
+			if (ImGui::IsItemHovered())
+			{
+				ImGui::BeginTooltip();
+				ImGui::TextUnformatted("Scale");
+				ImGui::EndTooltip();
+			}
 			ImGui::End();
 		}
 		if (ImGui::Begin("Lightning"))

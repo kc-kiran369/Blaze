@@ -4,8 +4,8 @@ Texture::Texture(const char* path, unsigned int slot)
 {
 	glGenTextures(1, &m_RendererID);
 	glBindTexture(GL_TEXTURE_2D, m_RendererID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
@@ -22,7 +22,10 @@ Texture::Texture(const char* path, unsigned int slot)
 		stbi_image_free(data);
 	else
 		std::cout << "Image Not loaded..." << std::endl;
-	glBindTexture(GL_TEXTURE_2D, 0);
+	if (slot != NULL)
+		glBindTexture(GL_TEXTURE_2D, 0);
+	else
+		std::cout << "Slot is Null" << std::endl;
 }
 
 Texture::~Texture()

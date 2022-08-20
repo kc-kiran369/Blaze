@@ -48,7 +48,7 @@ void Camera::Input(GLFWwindow* window)
 		Position += speed * -glm::normalize(Up);
 	}
 
-
+	//MIDDLE MOUSE TO ROTATE AROUND A ORBIT
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -79,11 +79,22 @@ void Camera::Input(GLFWwindow* window)
 		// Sets mouse cursor to the middle of the screen so that it doesn't end up roaming around
 		glfwSetCursorPos(window, (width / 2), (height / 2));
 	}
-	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
+	//
+	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_RELEASE)
 	{
 		// Unhides cursor since camera is not looking around anymore
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		// Makes sure the next time the camera looks around it doesn't jump
 		firstClick = true;
+	}
+
+	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	{
+		//Select any object
+	}
+
+	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+	{
+		//popup edit menu
 	}
 }
