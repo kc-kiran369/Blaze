@@ -1,37 +1,29 @@
-#include"iostream"
-
 #define STB_IMAGE_IMPLEMENTATION
+
+#include"iostream"
 
 #include"glew/glew.h"
 #include"glfw/glfw3.h"
+
 #include"CoreUI.h"
 #include"Texture.h"
 #include"Camera.h"
 #include"FrameBuffer.h"
-
-#include<future>
-
+#include"WindowManager.h"
 #include"Model.h"
 
-int width = 700, height = 700;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 int main()
 {
-	glfwInit();
-	GLFWwindow* window = glfwCreateWindow(width, height, "Blaze", nullptr, nullptr);
-	GLFWimage images;
-	images.pixels = stbi_load("Resources\\Icon\\Logo.png", &images.width, &images.height, 0, 4);
-	glfwSetWindowIcon(window, 1, &images);
-	stbi_image_free(images.pixels);
-	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSwapInterval(1);
+	WindowManager winManager;
+	winManager.OnAttach();
+
 	CoreUI ui;
-	ui.OnAttach(window);
+	ui.OnAttach(winManager.GetWindow());
 	glewInit();
 
-	Camera mainCamera(width, height, glm::vec3{ 0.0f, 4.0f, -5.0f });
+	Camera mainCamera(800,800, glm::vec3{ 0.0f, 4.0f, -5.0f });
 
 	Texture moveIcon("Resources\\Icon\\MoveIcon.png", NULL);
 	Texture rotateIcon("Resources\\Icon\\RotateIcon.png", NULL);
@@ -49,7 +41,7 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(winManager.GetWindow()))
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
@@ -82,13 +74,16 @@ int main()
 		}
 		if (ImGui::BeginMenu("Add"))
 		{
-			ImGui::MenuItem("Cube");
-			ImGui::MenuItem("Cylinder");
-			ImGui::MenuItem("Sphere");
-			if (ImGui::MenuItem("Import Model.."))
+			if (ImGui::BeginMenu("Mesh"))
 			{
-				//std::async(model->,);
-				model.loadModel("Resources\\Models\\Medievalhouse.fbx");
+				ImGui::MenuItem("Cube");
+				ImGui::MenuItem("Cylinder");
+				ImGui::MenuItem("Sphere");
+				if (ImGui::MenuItem("Import Model.."))
+				{
+					model.loadModel("Resources\\Models\\Medievalhouse.fbx");
+				}
+				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();
 		}
@@ -141,13 +136,12 @@ int main()
 		}
 
 		ui.End();
-		glfwPollEvents();
-		mainCamera.Input(window);
-		glfwSwapBuffers(window);
+		mainCamera.Input(winManager.GetWindow());
+		winManager.End();
 	}
 
 	ui.OnDetach();
-	glfwTerminate();
+	winManager.OnDetach();
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

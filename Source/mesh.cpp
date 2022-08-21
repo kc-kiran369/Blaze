@@ -5,14 +5,12 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 	this->vertices = vertices;
 	this->indices = indices;
 
-	std::cout << "MESH CREATED" << std::endl;
-
 	this->setupMesh();
 }
 
 Mesh::~Mesh()
 {
-	std::cout << "MESH DELETED" << std::endl;
+
 }
 
 void Mesh::Draw(Shader& shader)
