@@ -23,7 +23,7 @@ int main()
 	ui.OnAttach(winManager.GetWindow());
 	glewInit();
 
-	Camera mainCamera(800,800, glm::vec3{ 0.0f, 4.0f, -5.0f });
+	Camera mainCamera(800, 800, glm::vec3{ 0.0f, 4.0f, -5.0f });
 
 	Texture moveIcon("Resources\\Icon\\MoveIcon.png", NULL);
 	Texture rotateIcon("Resources\\Icon\\RotateIcon.png", NULL);
@@ -39,6 +39,8 @@ int main()
 
 	float ambientColor[] = { 0.4f,0.4f,0.4f,1.0f };
 
+	FrameBuffer framerBuffer;
+
 	glEnable(GL_DEPTH_TEST);
 
 	while (!glfwWindowShouldClose(winManager.GetWindow()))
@@ -49,7 +51,7 @@ int main()
 
 		shader.SetVec4("_ambientColor", ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
 
-		model.Draw(shader);
+#pragma region Collapse
 
 		ui.Begin();
 		ImGui::BeginMainMenuBar();
@@ -126,6 +128,8 @@ int main()
 			}
 			ImGui::End();
 		}
+#pragma endregion
+
 		if (ImGui::Begin("Lightning"))
 		{
 			if (ImGui::TreeNode("Basic")) {
@@ -134,6 +138,19 @@ int main()
 			}
 			ImGui::End();
 		}
+		//if (ImGui::Begin("Viewport"))
+		//{
+		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//	glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
+		//	framerBuffer.Bind();
+		//	//glBindTexture(GL_TEXTURE_2D, framerBuffer.GetTexture());
+		//	ImGui::Image((void*)framerBuffer.GetTexture(), ImVec2{ ImGui::GetWindowWidth(),ImGui::GetWindowHeight() });
+		//	framerBuffer.UnBind();
+		//	ImGui::End();
+		//}
+
+		texture.Bind();
+		model.Draw(shader);
 
 		ui.End();
 		mainCamera.Input(winManager.GetWindow());

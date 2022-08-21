@@ -15,7 +15,6 @@ public:
 	unsigned int GetRendererID();
 	unsigned int GetTexture();
 	unsigned int GetRBO();
-	void Update();
 };
 
 #endif
