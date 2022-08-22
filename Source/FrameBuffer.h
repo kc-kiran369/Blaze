@@ -4,7 +4,7 @@
 class FrameBuffer
 {
 private:
-	unsigned int m_RendererID, texture, rbo;
+	unsigned int m_RendererID, colorAttachment, depthAttachment;
 public:
 	FrameBuffer();
 	~FrameBuffer();
@@ -14,7 +14,5 @@ public:
 
 	unsigned int GetRendererID();
 	unsigned int GetTexture();
-	unsigned int GetRBO();
 };
-
 #endif

@@ -17,10 +17,6 @@ public:
 	void Begin();
 	void End();
 
-	void Style();
-
 	void SetDarkThemeColors();
 };
-
 #endif
-

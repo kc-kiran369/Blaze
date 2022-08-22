@@ -9,8 +9,3 @@
 *.vcxproj.user
 *.vs
 *.ini
-
-#Not to include 3d models & Image Files
-*.jpg
-*.png
-*.fbx

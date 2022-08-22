@@ -23,5 +23,4 @@ public:
 	unsigned int GetHeight();
 	unsigned int GetChannel();
 };
-
 #endif

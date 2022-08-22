@@ -26,7 +26,6 @@ void CoreUI::OnAttach(GLFWwindow* window)
 		style.WindowRounding = 0.0f;
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
-	Style();
 }
 
 void CoreUI::OnDetach()
@@ -41,6 +40,7 @@ void CoreUI::Begin()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+	ImGui::DockSpaceOverViewport();
 }
 
 void CoreUI::End()
@@ -115,14 +115,4 @@ void CoreUI::SetDarkThemeColors()
 	style->TabBorderSize = 1.0f;
 	style->TabRounding = 4.0f;
 	style->WindowRounding = 4.0f;
-}
-
-void CoreUI::Style()
-{
-	ImGuiStyle& style = ImGui::GetStyle();
-
-	style.TabRounding = 0.0f;
-	style.WindowRounding = 0.0f;
-	style.WindowMenuButtonPosition = ImGuiDir_None;
-	style.FramePadding = { 4.0f,6.0f };
 }

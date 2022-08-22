@@ -1,15 +1,17 @@
 #include "WindowManager.h"
 #include"stb_image/stb_image.h"
+#include<iostream>
 
 WindowManager::WindowManager()
 {
 	glfwInit();
 	window = glfwCreateWindow(800, 800, "Blaze", nullptr, nullptr);
+	std::cout << "Window Manager Initialized..." << std::endl;
 }
 
 WindowManager::~WindowManager()
 {
-
+	std::cout << "Window Manager Out Of Scope..." << std::endl;
 }
 
 void WindowManager::OnAttach()

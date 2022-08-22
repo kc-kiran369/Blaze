@@ -12,7 +12,7 @@
 #include"WindowManager.h"
 #include"Model.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+//void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 int main()
 {
@@ -23,18 +23,18 @@ int main()
 	ui.OnAttach(winManager.GetWindow());
 	glewInit();
 
-	Camera mainCamera(800, 800, glm::vec3{ 0.0f, 4.0f, -5.0f });
+	Camera mainCamera(800, 800, glm::vec3{ 1.0f, 4.0f, -15.0f });
 
-	Texture moveIcon("Resources\\Icon\\MoveIcon.png", NULL);
-	Texture rotateIcon("Resources\\Icon\\RotateIcon.png", NULL);
-	Texture scaleIcon("Resources\\Icon\\ScaleIcon.png", NULL);
+	//Texture moveIcon("Resources\\Icon\\MoveIcon.png", NULL);
+	//Texture rotateIcon("Resources\\Icon\\RotateIcon.png", NULL);
+	//Texture scaleIcon("Resources\\Icon\\ScaleIcon.png", NULL);
 
-	Shader shader("Source\\shader\\default.vert", "Source\\shader\\default.frag");
+	Shader defaultShader("Shader\\default.vert", "Shader\\default.frag");
 	Model model;
 	Texture texture("Resources\\Images\\MedievalhouseDiffuse.jpg", 0);
-	texture.Bind();
 
 	glm::mat4 _model = glm::mat4(1.0f);
+	model.loadModel("Resources\\Models\\Medievalhouse.fbx");
 	_model = glm::rotate(_model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
 
 	float ambientColor[] = { 0.4f,0.4f,0.4f,1.0f };
@@ -47,11 +47,11 @@ int main()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
-		mainCamera.UpdateMatrix(45.0f, 0.1f, 1000.0f, _model, shader);
+		mainCamera.UpdateMatrix(45.0f, 0.1f, 1000.0f, _model, defaultShader);
 
-		shader.SetVec4("_ambientColor", ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
+		defaultShader.SetVec4("_ambientColor", ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
 
-#pragma region Collapse
+#pragma region GUI
 
 		ui.Begin();
 		ImGui::BeginMainMenuBar();
@@ -90,7 +90,8 @@ int main()
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
-		if (ImGui::Begin("ToolBar", (bool*)0, ImGuiWindowFlags_NoTitleBar |
+
+		/*if (ImGui::Begin("ToolBar", (bool*)0, ImGuiWindowFlags_NoTitleBar |
 			ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize |
 			ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoMove))
 		{
@@ -127,7 +128,7 @@ int main()
 				ImGui::EndTooltip();
 			}
 			ImGui::End();
-		}
+		}*/
 #pragma endregion
 
 		if (ImGui::Begin("Lightning"))
@@ -138,20 +139,20 @@ int main()
 			}
 			ImGui::End();
 		}
-		//if (ImGui::Begin("Viewport"))
-		//{
-		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//	glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
-		//	framerBuffer.Bind();
-		//	//glBindTexture(GL_TEXTURE_2D, framerBuffer.GetTexture());
-		//	ImGui::Image((void*)framerBuffer.GetTexture(), ImVec2{ ImGui::GetWindowWidth(),ImGui::GetWindowHeight() });
-		//	framerBuffer.UnBind();
-		//	ImGui::End();
-		//}
+		
+		if (ImGui::Begin("Viewport"))
+		{
+			ImGui::Image((void*)framerBuffer.GetTexture(), ImVec2{ ImGui::GetWindowWidth(),ImGui::GetWindowHeight() });
+			ImGui::End();
+		}
 
+		framerBuffer.Bind();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
 		texture.Bind();
-		model.Draw(shader);
-
+		model.Draw(defaultShader);
+		framerBuffer.UnBind();
+		
 		ui.End();
 		mainCamera.Input(winManager.GetWindow());
 		winManager.End();
@@ -160,8 +161,8 @@ int main()
 	ui.OnDetach();
 	winManager.OnDetach();
 }
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
+//
+//void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+//{
+//	glViewport(0, 0, width, height);
+//}
