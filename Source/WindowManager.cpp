@@ -6,7 +6,7 @@ WindowManager::WindowManager()
 {
 	glfwInit();
 	window = glfwCreateWindow(800, 800, "Blaze", nullptr, nullptr);
-	std::cout << "Window Manager Initialized..." << std::endl;
+	std::cout << (window ? "Window initialized.." : "[Error : Window didn't created]") << std::endl;
 }
 
 WindowManager::~WindowManager()
@@ -18,8 +18,7 @@ void WindowManager::OnAttach()
 {
 	this->SetIcon(this->GetWindow());
 
-	//glfwSetFramebufferSizeCallback(this->GetWindow(), framebuffer_size_callback);
-	glfwMaximizeWindow(this->GetWindow());
+	//glfwMaximizeWindow(this->GetWindow());
 
 	glfwMakeContextCurrent(this->GetWindow());
 	glfwSwapInterval(1);
@@ -32,6 +31,7 @@ void WindowManager::OnDetach()
 
 void WindowManager::Begin()
 {
+
 }
 
 void WindowManager::End()
@@ -42,7 +42,7 @@ void WindowManager::End()
 
 GLFWwindow* WindowManager::GetWindow()
 {
-	return this->window;
+	return window;
 }
 
 void WindowManager::SetIcon(GLFWwindow* window)

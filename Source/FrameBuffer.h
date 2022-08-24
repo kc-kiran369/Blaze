@@ -13,6 +13,7 @@ public:
 	void UnBind();
 
 	unsigned int GetRendererID();
-	unsigned int GetTexture();
+	unsigned int GetColorTexture();
+	unsigned int GetDepthTexture();
 };
 #endif

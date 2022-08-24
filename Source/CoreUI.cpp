@@ -12,6 +12,7 @@ void CoreUI::OnAttach(GLFWwindow* window)
 	ImGui_ImplOpenGL3_Init("#version 330");
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigDockingAlwaysTabBar = true;
 	io.IniFilename = "config.ini";
 
 	SetDarkThemeColors();

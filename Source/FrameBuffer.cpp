@@ -55,7 +55,12 @@ unsigned int FrameBuffer::GetRendererID()
 	return m_RendererID;
 }
 
-unsigned int FrameBuffer::GetTexture()
+unsigned int FrameBuffer::GetColorTexture()
 {
 	return colorAttachment;
+}
+
+unsigned int FrameBuffer::GetDepthTexture()
+{
+	return depthAttachment;
 }

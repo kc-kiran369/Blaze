@@ -11,8 +11,7 @@
 #include"FrameBuffer.h"
 #include"WindowManager.h"
 #include"Model.h"
-
-//void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+#include"FileDialog.h"
 
 int main()
 {
@@ -24,10 +23,6 @@ int main()
 	glewInit();
 
 	Camera mainCamera(800, 800, glm::vec3{ 1.0f, 4.0f, -15.0f });
-
-	//Texture moveIcon("Resources\\Icon\\MoveIcon.png", NULL);
-	//Texture rotateIcon("Resources\\Icon\\RotateIcon.png", NULL);
-	//Texture scaleIcon("Resources\\Icon\\ScaleIcon.png", NULL);
 
 	Shader defaultShader("Shader\\default.vert", "Shader\\default.frag");
 	Model model;
@@ -42,7 +37,7 @@ int main()
 	FrameBuffer framerBuffer;
 
 	glEnable(GL_DEPTH_TEST);
-
+	glDepthFunc(GL_LESS);
 	while (!glfwWindowShouldClose(winManager.GetWindow()))
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -52,14 +47,18 @@ int main()
 		defaultShader.SetVec4("_ambientColor", ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
 
 #pragma region GUI
-
 		ui.Begin();
 		ImGui::BeginMainMenuBar();
 		if (ImGui::BeginMenu("File"))
 		{
-			ImGui::MenuItem("Open", "Ctrl+o");
-			ImGui::MenuItem("Save as", "Ctrl+s");
-			if (ImGui::MenuItem("Exit", "Ctrl+q")) {
+			if (ImGui::MenuItem("Open", "Ctrl+O"))
+			{
+				FileDialog::OpenFile(".png,.jpg", winManager.GetWindow());
+				FileDialog::SaveFile(".png,.jpg", winManager.GetWindow());
+			}
+			ImGui::MenuItem("New", "Ctrl+N");
+			ImGui::MenuItem("Save as", "Ctrl+S");
+			if (ImGui::MenuItem("Exit", "Ctrl+Q")) {
 				exit(EXIT_SUCCESS);
 			}
 			ImGui::EndMenu();
@@ -90,45 +89,6 @@ int main()
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
-
-		/*if (ImGui::Begin("ToolBar", (bool*)0, ImGuiWindowFlags_NoTitleBar |
-			ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize |
-			ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoMove))
-		{
-			ImGui::SetWindowPos(ImVec2{ 0.0f,30.0f });
-
-			if (ImGui::ImageButton((void*)moveIcon.GetRendererID(), ImVec2{ 20.0f,20.0f }))
-			{
-				std::cout << "Transform Tool Selected" << std::endl;
-			}
-			if (ImGui::IsItemHovered())
-			{
-				ImGui::BeginTooltip();
-				ImGui::TextUnformatted("Move");
-				ImGui::EndTooltip();
-			}
-			if (ImGui::ImageButton((void*)rotateIcon.GetRendererID(), ImVec2{ 20.0f,20.0f }))
-			{
-				std::cout << "Rotate Tool Selected" << std::endl;
-			}
-			if (ImGui::IsItemHovered())
-			{
-				ImGui::BeginTooltip();
-				ImGui::TextUnformatted("Rotate");
-				ImGui::EndTooltip();
-			}
-			if (ImGui::ImageButton((void*)scaleIcon.GetRendererID(), ImVec2{ 20.0f,20.0f }))
-			{
-				std::cout << "Scale Tool Selected" << std::endl;
-			}
-			if (ImGui::IsItemHovered())
-			{
-				ImGui::BeginTooltip();
-				ImGui::TextUnformatted("Scale");
-				ImGui::EndTooltip();
-			}
-			ImGui::End();
-		}*/
 #pragma endregion
 
 		if (ImGui::Begin("Lightning"))
@@ -139,10 +99,16 @@ int main()
 			}
 			ImGui::End();
 		}
-		
-		if (ImGui::Begin("Viewport"))
+
+		if (ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_NoResize))
 		{
-			ImGui::Image((void*)framerBuffer.GetTexture(), ImVec2{ ImGui::GetWindowWidth(),ImGui::GetWindowHeight() });
+			ImGui::Image((void*)framerBuffer.GetColorTexture(), ImVec2{ ImGui::GetWindowWidth(),ImGui::GetWindowHeight() });
+			ImGui::End();
+		}
+
+		if (ImGui::Begin("Console"))
+		{
+			ImGui::Text("Messages..");
 			ImGui::End();
 		}
 
@@ -152,7 +118,7 @@ int main()
 		texture.Bind();
 		model.Draw(defaultShader);
 		framerBuffer.UnBind();
-		
+
 		ui.End();
 		mainCamera.Input(winManager.GetWindow());
 		winManager.End();
@@ -161,8 +127,3 @@ int main()
 	ui.OnDetach();
 	winManager.OnDetach();
 }
-//
-//void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-//{
-//	glViewport(0, 0, width, height);
-//}
