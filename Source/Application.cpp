@@ -29,7 +29,6 @@ int main()
 	Texture texture("Resources\\Images\\MedievalhouseDiffuse.jpg", 0);
 
 	glm::mat4 _model = glm::mat4(1.0f);
-	model.loadModel("Resources\\Models\\Medievalhouse.fbx");
 	_model = glm::rotate(_model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
 
 	float ambientColor[] = { 0.4f,0.4f,0.4f,1.0f };
@@ -51,14 +50,11 @@ int main()
 		ImGui::BeginMainMenuBar();
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Open", "Ctrl+O"))
-			{
-				FileDialog::OpenFile(".png,.jpg", winManager.GetWindow());
-				FileDialog::SaveFile(".png,.jpg", winManager.GetWindow());
-			}
+			ImGui::MenuItem("Open", "Ctrl+O");
 			ImGui::MenuItem("New", "Ctrl+N");
 			ImGui::MenuItem("Save as", "Ctrl+S");
-			if (ImGui::MenuItem("Exit", "Ctrl+Q")) {
+			if (ImGui::MenuItem("Exit", "Ctrl+Q")) 
+			{
 				exit(EXIT_SUCCESS);
 			}
 			ImGui::EndMenu();
@@ -82,7 +78,8 @@ int main()
 				ImGui::MenuItem("Sphere");
 				if (ImGui::MenuItem("Import Model.."))
 				{
-					model.loadModel("Resources\\Models\\Medievalhouse.fbx");
+					std::string path = FileDialog::OpenFile("*.fbx\0", winManager.GetWindow());
+					model.loadModel(path);
 				}
 				ImGui::EndMenu();
 			}
@@ -103,12 +100,6 @@ int main()
 		if (ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_NoResize))
 		{
 			ImGui::Image((void*)framerBuffer.GetColorTexture(), ImVec2{ ImGui::GetWindowWidth(),ImGui::GetWindowHeight() });
-			ImGui::End();
-		}
-
-		if (ImGui::Begin("Console"))
-		{
-			ImGui::Text("Messages..");
 			ImGui::End();
 		}
 

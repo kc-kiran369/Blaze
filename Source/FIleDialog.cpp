@@ -6,20 +6,25 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
+#include<iostream>
+
 std::string FileDialog::OpenFile(const char* filter, GLFWwindow* window)
 {
 	OPENFILENAMEA ofn;
 	char szFile[260] = { 0 };
 	ZeroMemory(&ofn, sizeof(OPENFILENAME));
 	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = glfwGetWin32Window(window);
-	
+	ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)window);
 	ofn.lpstrFile = szFile;
 	ofn.nMaxFile = sizeof(szFile);
 	ofn.lpstrFilter = filter;
 	ofn.nFilterIndex = 1;
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-	return ofn.lpstrFile;
+	if (GetOpenFileNameA(&ofn) == TRUE)
+	{
+		return ofn.lpstrFile;
+	}
+	return std::string();
 }
 
 std::string FileDialog::SaveFile(const char* filter, GLFWwindow* window)
@@ -34,5 +39,9 @@ std::string FileDialog::SaveFile(const char* filter, GLFWwindow* window)
 	ofn.lpstrFilter = filter;
 	ofn.nFilterIndex = 1;
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-	return ofn.lpstrFile;
+	if (GetSaveFileNameA(&ofn) == TRUE)
+	{
+		return ofn.lpstrFile;
+	}
+	return std::string();
 }
