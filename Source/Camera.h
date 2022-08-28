@@ -30,5 +30,6 @@ public:
 
 	void UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane, glm::mat4& model, Shader& shader);
 	void Input(GLFWwindow* window);
+	void OnResize();	//Not Implemented
 };
 #endif

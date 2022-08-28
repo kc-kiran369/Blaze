@@ -13,8 +13,9 @@
 #include"Model.h"
 #include"FileDialog.h"
 
-int main()
+int main(int args, char** argv)
 {
+	std::cout << argv[0] << std::endl;
 	WindowManager winManager;
 	winManager.OnAttach();
 
@@ -22,9 +23,10 @@ int main()
 	ui.OnAttach(winManager.GetWindow());
 	glewInit();
 
-	Camera mainCamera(800, 800, glm::vec3{ 1.0f, 4.0f, -15.0f });
+	Camera mainCamera(1000, 1000, glm::vec3{ 5.0f, 5.0f, -15.0f });
 
 	Shader defaultShader("Shader\\default.vert", "Shader\\default.frag");
+	Shader brightShader("Shader\\default.vert", "Shader\\BrightColor.frag");
 	Model model;
 	Texture texture("Resources\\Images\\MedievalhouseDiffuse.jpg", 0);
 
@@ -36,7 +38,11 @@ int main()
 	FrameBuffer framerBuffer;
 
 	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_ALWAYS);
 	glDepthFunc(GL_LESS);
+
+	float currTime = 0.0f, preTime = 0.0f, timeDiff = 0.0f;
+
 	while (!glfwWindowShouldClose(winManager.GetWindow()))
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -45,35 +51,44 @@ int main()
 
 		defaultShader.SetVec4("_ambientColor", ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
 
-#pragma region GUI
+		currTime = glfwGetTime();
+		timeDiff = currTime - preTime;
+
 		ui.Begin();
-		ImGui::BeginMainMenuBar();
-		if (ImGui::BeginMenu("File"))
+		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::MenuItem("Open", "Ctrl+O");
-			ImGui::MenuItem("New", "Ctrl+N");
-			ImGui::MenuItem("Save as", "Ctrl+S");
-			if (ImGui::MenuItem("Exit", "Ctrl+Q")) 
+			if (ImGui::BeginMenu("File"))
 			{
-				exit(EXIT_SUCCESS);
+				ImGui::MenuItem("Open", "Ctrl+O");
+				ImGui::MenuItem("New", "Ctrl+N");
+				ImGui::MenuItem("Save as", "Ctrl+S");
+				if (ImGui::MenuItem("Exit", "Ctrl+Q"))
+				{
+					exit(EXIT_SUCCESS);
+				}
+				ImGui::EndMenu();
 			}
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("View"))
-		{
-			ImGui::MenuItem("Hide All Panels");
-			ImGui::MenuItem("Property Panel");
-			ImGui::MenuItem("Grid");
-			ImGui::MenuItem("Zoom in  -");
-			ImGui::MenuItem("Zoom out +");
-			ImGui::MenuItem("Reset Camera +");
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Add"))
-		{
-			if (ImGui::BeginMenu("Mesh"))
+			if (ImGui::BeginMenu("Edit"))
 			{
-				ImGui::MenuItem("Cube");
+				if (ImGui::MenuItem("Preferences"))
+				{
+
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("View"))
+			{
+				ImGui::MenuItem("Hide All Panels");
+				ImGui::MenuItem("Property Panel");
+				ImGui::MenuItem("Grid");
+				ImGui::MenuItem("Zoom in  -");
+				ImGui::MenuItem("Zoom out +");
+				ImGui::MenuItem("Reset Camera +");
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Add"))
+			{
+				ImGui::MenuItem("Cone");
 				ImGui::MenuItem("Cylinder");
 				ImGui::MenuItem("Sphere");
 				if (ImGui::MenuItem("Import Model.."))
@@ -83,25 +98,42 @@ int main()
 				}
 				ImGui::EndMenu();
 			}
-			ImGui::EndMenu();
-		}
-		ImGui::EndMainMenuBar();
-#pragma endregion
-
-		if (ImGui::Begin("Lightning"))
-		{
-			if (ImGui::TreeNode("Basic")) {
-				ImGui::ColorEdit4("Ambient Color", ambientColor);
-				ImGui::TreePop();
-			}
-			ImGui::End();
+			ImGui::EndMainMenuBar();
 		}
 
-		if (ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_NoResize))
-		{
-			ImGui::Image((void*)framerBuffer.GetColorTexture(), ImVec2{ ImGui::GetWindowWidth(),ImGui::GetWindowHeight() });
-			ImGui::End();
+		ImGui::Begin("Lightning");
+		if (ImGui::TreeNode("Basic")) {
+			ImGui::ColorEdit4("Ambient Color", ambientColor, ImGuiColorEditFlags_NoInputs);
+			ImGui::TreePop();
 		}
+		ImGui::End();
+
+		ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_NoResize);
+		ImGui::Text("FPS : %f", (1 / timeDiff));
+		ImGui::Image((void*)framerBuffer.GetColorTexture(), ImVec2{ ImGui::GetWindowWidth(),ImGui::GetWindowHeight() });
+		ImGui::End();
+
+		ImGui::Begin("Camera Settings");
+		ImGui::SliderFloat("Sensitivity", &mainCamera.sensitivity, 20.0f, 50.0f, std::to_string(mainCamera.sensitivity).c_str(), 1.0f);
+		ImGui::SliderFloat("Speed", &mainCamera.speed, 0.01f, 1.0f, std::to_string(mainCamera.speed).c_str(), 1.0f);
+		ImGui::End();
+
+		ImGui::Begin("Hierarchy");
+		ImGui::Text("Entity 1");
+		ImGui::Text("Entity 2");
+		ImGui::Text("Entity 3");
+		ImGui::End();
+
+		ImGui::Begin("Inspector");
+		ImGui::Text("Entity Name");
+		if (ImGui::Button("Add Component"))
+		{
+
+		}
+		ImGui::Text("Transform");
+		ImGui::Text("Mesh Filter");
+		ImGui::Text("Mesh Renderer");
+		ImGui::End();
 
 		framerBuffer.Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -113,6 +145,7 @@ int main()
 		ui.End();
 		mainCamera.Input(winManager.GetWindow());
 		winManager.End();
+		preTime = currTime;
 	}
 
 	ui.OnDetach();

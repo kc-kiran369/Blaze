@@ -11,14 +11,14 @@ void CoreUI::OnAttach(GLFWwindow* window)
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 330");
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigDockingAlwaysTabBar = true;
 	io.IniFilename = "config.ini";
 
 	SetDarkThemeColors();
 
-	float fontSize = 18.0f;
-	//io.Fonts->AddFontFromFileTTF("res/fonts/Mohave-Regular.ttf", fontSize);
+	float fontSize = 15.0f;
+	io.Fonts->AddFontFromFileTTF("Resources/Fonts/Urbanist/Urbanist-Black.ttf", fontSize);
 	//io.FontDefault = io.Fonts->AddFontFromFileTTF("res/fonts/Mohave-Regular.ttf", fontSize);
 
 	ImGuiStyle& style = ImGui::GetStyle();
@@ -116,4 +116,5 @@ void CoreUI::SetDarkThemeColors()
 	style->TabBorderSize = 1.0f;
 	style->TabRounding = 4.0f;
 	style->WindowRounding = 4.0f;
+	style->WindowMenuButtonPosition = ImGuiDir_None;
 }

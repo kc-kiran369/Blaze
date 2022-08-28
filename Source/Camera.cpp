@@ -4,9 +4,7 @@
 Camera::Camera(int _width, int _height, glm::vec3 _position)
 	:width(_width), height(_height), Position(_position)
 {
-	//Camera::width = _width;
-	//Camera::height = _height;
-	//Position = _position;
+
 }
 
 void Camera::UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane, glm::mat4& model, Shader& shader)

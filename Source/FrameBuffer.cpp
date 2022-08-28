@@ -9,7 +9,7 @@ FrameBuffer::FrameBuffer()
 
 	glGenTextures(1, &colorAttachment);
 	glBindTexture(GL_TEXTURE_2D, colorAttachment);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 512, 512, 0, GL_RGB,
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 600, 600, 0, GL_RGB,
 		GL_UNSIGNED_BYTE, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -19,16 +19,13 @@ FrameBuffer::FrameBuffer()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
 		colorAttachment, 0);
 
+	glEnable(GL_DEPTH_TEST);
 	glGenTextures(1, &depthAttachment);
 	glBindTexture(GL_TEXTURE_2D, depthAttachment);
-	glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, 800, 800);
-
-	stbi_set_flip_vertically_on_load(true);
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, 1000, 1000);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)
-	{
 		std::cout << "FrameBuffer Completed" << std::endl;
-	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
