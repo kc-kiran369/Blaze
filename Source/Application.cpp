@@ -13,6 +13,8 @@
 #include"Model.h"
 #include"FileDialog.h"
 
+#include"../tests/Scene.h"
+
 int main(int args, char** argv)
 {
 	std::cout << argv[0] << std::endl;
@@ -22,6 +24,8 @@ int main(int args, char** argv)
 	CoreUI ui;
 	ui.OnAttach(winManager.GetWindow());
 	glewInit();
+
+	Scene mainScene;
 
 	Camera mainCamera(1000, 1000, glm::vec3{ 5.0f, 5.0f, -15.0f });
 
@@ -98,6 +102,14 @@ int main(int args, char** argv)
 				}
 				ImGui::EndMenu();
 			}
+			if (ImGui::BeginMenu("Entity"))
+			{
+				if (ImGui::MenuItem("Add Entity"))
+				{
+					mainScene.CreateEntity("Untitled Entity");
+				}
+				ImGui::EndMenu();
+			}
 			ImGui::EndMainMenuBar();
 		}
 
@@ -119,9 +131,12 @@ int main(int args, char** argv)
 		ImGui::End();
 
 		ImGui::Begin("Hierarchy");
-		ImGui::Text("Entity 1");
-		ImGui::Text("Entity 2");
-		ImGui::Text("Entity 3");
+		ImGui::Text("Total entities : %d", mainScene.m_Registry.size());
+		auto view = mainScene.m_Registry.view<Tag>();
+		for (auto entity : view)
+		{
+			ImGui::Text("- %s", view.get<Tag>(entity).tag);
+		}
 		ImGui::End();
 
 		ImGui::Begin("Inspector");
@@ -131,7 +146,6 @@ int main(int args, char** argv)
 
 		}
 		ImGui::Text("Transform");
-		ImGui::Text("Mesh Filter");
 		ImGui::Text("Mesh Renderer");
 		ImGui::End();
 

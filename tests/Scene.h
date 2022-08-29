@@ -9,7 +9,9 @@ class Scene
 public:
 	Scene();
 	~Scene();
-private:
+
+	void CreateEntity(std::string name);
 	entt::registry m_Registry;
+private:
 };
 #endif
