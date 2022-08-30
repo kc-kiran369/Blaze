@@ -3,6 +3,9 @@
 
 #include"ENTT/entt.hpp"
 #include "Components.h"
+//#include"Entity.h"
+
+class Entity; 
 
 class Scene
 {
@@ -10,8 +13,10 @@ public:
 	Scene();
 	~Scene();
 
-	void CreateEntity(std::string name);
+	Entity CreateEntity();
 	entt::registry m_Registry;
+
+	//friend class Entity;
 private:
 };
 #endif

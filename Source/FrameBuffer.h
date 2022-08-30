@@ -4,7 +4,7 @@
 class FrameBuffer
 {
 private:
-	unsigned int m_RendererID, colorAttachment, depthAttachment;
+	unsigned int m_RendererID, colorAttachment, depthAttachment, renderBuffer;
 public:
 	FrameBuffer();
 	~FrameBuffer();

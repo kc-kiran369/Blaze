@@ -1,4 +1,4 @@
-#define STB_IMAGE_IMPLEMENTATION
+﻿#define STB_IMAGE_IMPLEMENTATION
 
 #include"iostream"
 
@@ -14,6 +14,7 @@
 #include"FileDialog.h"
 
 #include"../tests/Scene.h"
+#include"../tests/Entity.h"
 
 int main(int args, char** argv)
 {
@@ -26,6 +27,8 @@ int main(int args, char** argv)
 	glewInit();
 
 	Scene mainScene;
+	std::vector<Entity> entities;
+	//Entity* activeOnViewport = nullptr;
 
 	Camera mainCamera(1000, 1000, glm::vec3{ 5.0f, 5.0f, -15.0f });
 
@@ -42,15 +45,13 @@ int main(int args, char** argv)
 	FrameBuffer framerBuffer;
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_ALWAYS);
-	glDepthFunc(GL_LESS);
 
 	float currTime = 0.0f, preTime = 0.0f, timeDiff = 0.0f;
 
 	while (!glfwWindowShouldClose(winManager.GetWindow()))
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
+		glClearColor(32.0f / 255.0f, 32.0f / 255.0f, 32.0f / 255.0f, 1.0f);
 		mainCamera.UpdateMatrix(45.0f, 0.1f, 1000.0f, _model, defaultShader);
 
 		defaultShader.SetVec4("_ambientColor", ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
@@ -59,6 +60,8 @@ int main(int args, char** argv)
 		timeDiff = currTime - preTime;
 
 		ui.Begin();
+
+#pragma region MainMenuBar
 		if (ImGui::BeginMainMenuBar())
 		{
 			if (ImGui::BeginMenu("File"))
@@ -92,6 +95,13 @@ int main(int args, char** argv)
 			}
 			if (ImGui::BeginMenu("Add"))
 			{
+				if (ImGui::MenuItem("Empty Entity"))
+				{
+					const char* name = "Empty Entity";
+					Entity temp = mainScene.CreateEntity();
+					temp.AddComponent<Tag>(name);
+					entities.push_back(temp);
+				}
 				ImGui::MenuItem("Cone");
 				ImGui::MenuItem("Cylinder");
 				ImGui::MenuItem("Sphere");
@@ -102,16 +112,9 @@ int main(int args, char** argv)
 				}
 				ImGui::EndMenu();
 			}
-			if (ImGui::BeginMenu("Entity"))
-			{
-				if (ImGui::MenuItem("Add Entity"))
-				{
-					mainScene.CreateEntity("Untitled Entity");
-				}
-				ImGui::EndMenu();
-			}
 			ImGui::EndMainMenuBar();
 		}
+#pragma endregion
 
 		ImGui::Begin("Lightning");
 		if (ImGui::TreeNode("Basic")) {
@@ -121,8 +124,7 @@ int main(int args, char** argv)
 		ImGui::End();
 
 		ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_NoResize);
-		ImGui::Text("FPS : %f", (1 / timeDiff));
-		ImGui::Image((void*)framerBuffer.GetColorTexture(), ImVec2{ ImGui::GetWindowWidth(),ImGui::GetWindowHeight() });
+		ImGui::Image((void*)framerBuffer.GetColorTexture(), ImVec2{ 1000,1000 });
 		ImGui::End();
 
 		ImGui::Begin("Camera Settings");
@@ -135,18 +137,42 @@ int main(int args, char** argv)
 		auto view = mainScene.m_Registry.view<Tag>();
 		for (auto entity : view)
 		{
-			ImGui::Text("- %s", view.get<Tag>(entity).tag);
+			if (ImGui::MenuItem(view.get<Tag>(entity).tag))
+			{
+				//activeOnViewport->m_Entity = entity;
+			}
 		}
 		ImGui::End();
 
 		ImGui::Begin("Inspector");
-		ImGui::Text("Entity Name");
+		/*if (activeOnViewport != nullptr)
+			ImGui::Text(activeOnViewport->GetComponent<Tag>().tag);*/
+		for (auto entity : entities)
+		{
+			ImGui::Text(entity.GetComponent<Tag>().tag);
+		}
+
+		ImGui::BeginGroup();
+		ImGui::Text("Transform");
+		float tr[3];
+		ImGui::DragFloat3("Transform", tr, 1.0f, 0.0f, 1.0f, "", ImGuiSliderFlags_None);
+		ImGui::EndGroup();
+		ImGui::Text("Mesh Renderer");
+		if (ImGui::BeginCombo("Components", "RigidBody"))
+		{
+			//ImGui::Combo("Transform",);
+			ImGui::MenuItem("Mesh Renderer");
+			ImGui::MenuItem("RigidBody");
+			ImGui::MenuItem("Mono");
+			ImGui::EndCombo();
+		}
 		if (ImGui::Button("Add Component"))
 		{
-
 		}
-		ImGui::Text("Transform");
-		ImGui::Text("Mesh Renderer");
+		ImGui::End();
+
+		ImGui::Begin("Profiler");
+		ImGui::Text("FPS : %f", (1 / timeDiff));
 		ImGui::End();
 
 		framerBuffer.Bind();
@@ -161,7 +187,6 @@ int main(int args, char** argv)
 		winManager.End();
 		preTime = currTime;
 	}
-
 	ui.OnDetach();
 	winManager.OnDetach();
 }

@@ -10,8 +10,6 @@ WindowManager::WindowManager()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	
-	
 }
 
 WindowManager::~WindowManager()
@@ -23,7 +21,7 @@ void WindowManager::OnAttach()
 {
 	this->SetIcon(this->GetWindow());
 
-	//glfwMaximizeWindow(this->GetWindow());
+	glfwMaximizeWindow(this->GetWindow());
 
 	glfwMakeContextCurrent(this->GetWindow());
 	glfwSwapInterval(1);

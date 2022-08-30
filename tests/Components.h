@@ -28,5 +28,4 @@ struct Renderer
 
 struct RigidBody;
 struct SpiritRenderer;
-
 #endif
