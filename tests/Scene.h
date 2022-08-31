@@ -3,9 +3,8 @@
 
 #include"ENTT/entt.hpp"
 #include "Components.h"
-//#include"Entity.h"
 
-class Entity; 
+class Entity;
 
 class Scene
 {
@@ -14,9 +13,10 @@ public:
 	~Scene();
 
 	Entity CreateEntity();
+	void DestroyEntity(Entity entity);
 	entt::registry m_Registry;
 
-	//friend class Entity;
+	friend class Entity;
 private:
 };
 #endif

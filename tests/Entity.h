@@ -8,7 +8,7 @@ class Entity
 {
 private:
 public:
-	entt::entity m_Entity;
+	entt::entity m_Entity = entt::entity(NULL);
 	Scene* m_Scene = nullptr;
 
 	Entity() = default;
@@ -20,12 +20,15 @@ public:
 
 	template<typename T>
 	T& GetComponent();
+
+	template<typename T>
+	bool HasComponent();
 };
 
 template<typename T, typename ...Args>
 inline T& Entity::AddComponent(Args&& ...args)
 {
-	/*if (all_of<T>)
+	/*if (m_Scene->m_Registry.all_of<T>(m_Entity))
 	{
 		std::cout << "Component Already exists." << std::endl;
 	}*/
@@ -36,5 +39,13 @@ template<typename T>
 inline T& Entity::GetComponent()
 {
 	return m_Scene->m_Registry.get<T>(m_Entity);
+}
+template<typename T>
+inline bool Entity::HasComponent()
+{
+	if (m_Scene->m_Registry.all_of<T>(m_Entity))
+		return true;
+	else
+		return false;
 }
 #endif

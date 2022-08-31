@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include"Logger.h"
 
 Texture::Texture(const char* path, unsigned int slot)
 {
@@ -21,12 +22,13 @@ Texture::Texture(const char* path, unsigned int slot)
 	if (data)
 		stbi_image_free(data);
 	else
-		std::cout << "Image Not loaded..." << std::endl;
+		Logger::Warn("Image didn't load");
 
 	if (slot != NULL)
 		glBindTexture(GL_TEXTURE_2D, 0);
 	else
-		std::cout << "Slot is Null" << std::endl;
+		//std::cout << "Slot is Null" << std::endl;
+		Logger::Warn("Slot is Null");
 }
 
 Texture::~Texture()

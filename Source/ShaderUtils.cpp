@@ -1,4 +1,5 @@
 #include"ShaderUtils.h"
+#include"Logger.h"
 
 unsigned int CompileShader(unsigned int type, std::string& src)
 {
@@ -10,7 +11,8 @@ unsigned int CompileShader(unsigned int type, std::string& src)
 	glGetShaderiv(id, GL_COMPILE_STATUS, &result);
 	if (result == GL_FALSE)
 	{
-		std::cout << "Error at " << (type == GL_VERTEX_SHADER ? "vertex shader" : "fragment shader") << std::endl;
+		//std::cout << "Error at " << (type == GL_VERTEX_SHADER ? "vertex shader" : "fragment shader") << std::endl;
+		Logger::Error("Error at %s", (type == GL_VERTEX_SHADER ? "vertex shader" : "fragment shader"));
 		int length;
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 		char* data = (char*)malloc(sizeof(char) * length);
@@ -19,7 +21,7 @@ unsigned int CompileShader(unsigned int type, std::string& src)
 		free(data);
 		return result;
 	}
-	std::cout << (type == GL_VERTEX_SHADER ? "Vertex Shader" : "Fragment Shader") << " Compiled...." << std::endl;
+	Logger::Info("%s %s", (type == GL_VERTEX_SHADER ? "Vertex Shader" : "Fragment Shader"), "compiled");
 	return id;
 }
 
@@ -41,7 +43,7 @@ std::string ParseShader(const char* path)
 {
 	std::ifstream inp(path);
 	if (!inp.is_open())
-		std::cout << "Shader didn't open\nPath : " << path << std::endl;
+		Logger::Error("Shader didn't open : %s", path);
 	std::string line;
 	std::stringstream ss;
 	while (getline(inp, line))

@@ -1,6 +1,7 @@
 ﻿#define STB_IMAGE_IMPLEMENTATION
 
 #include"iostream"
+#include<thread>
 
 #include"glew/glew.h"
 #include"glfw/glfw3.h"
@@ -12,13 +13,16 @@
 #include"WindowManager.h"
 #include"Model.h"
 #include"FileDialog.h"
+#include"Prompt.h"
 
 #include"../tests/Scene.h"
 #include"../tests/Entity.h"
 
+#include"Logger.h"
+
 int main(int args, char** argv)
 {
-	std::cout << argv[0] << std::endl;
+	Logger::Info(argv[0]);
 	WindowManager winManager;
 	winManager.OnAttach();
 
@@ -27,8 +31,8 @@ int main(int args, char** argv)
 	glewInit();
 
 	Scene mainScene;
-	std::vector<Entity> entities;
-	//Entity* activeOnViewport = nullptr;
+	//std::vector<Entity> entities;
+	Entity* activeEnt = nullptr;
 
 	Camera mainCamera(1000, 1000, glm::vec3{ 5.0f, 5.0f, -15.0f });
 
@@ -46,7 +50,7 @@ int main(int args, char** argv)
 
 	glEnable(GL_DEPTH_TEST);
 
-	float currTime = 0.0f, preTime = 0.0f, timeDiff = 0.0f;
+	double currTime = 0.0f, preTime = 0.0f, timeDiff = 0.0f;
 
 	while (!glfwWindowShouldClose(winManager.GetWindow()))
 	{
@@ -71,7 +75,10 @@ int main(int args, char** argv)
 				ImGui::MenuItem("Save as", "Ctrl+S");
 				if (ImGui::MenuItem("Exit", "Ctrl+Q"))
 				{
-					exit(EXIT_SUCCESS);
+					if (Prompt::Open(winManager.GetWindow(), "Any unsaved progress will not be saved", "Are you sure want to exit!!", MB_YESNO | MB_ICONINFORMATION) == IDYES)
+					{
+						exit(EXIT_SUCCESS);
+					}
 				}
 				ImGui::EndMenu();
 			}
@@ -97,10 +104,7 @@ int main(int args, char** argv)
 			{
 				if (ImGui::MenuItem("Empty Entity"))
 				{
-					const char* name = "Empty Entity";
-					Entity temp = mainScene.CreateEntity();
-					temp.AddComponent<Tag>(name);
-					entities.push_back(temp);
+
 				}
 				ImGui::MenuItem("Cone");
 				ImGui::MenuItem("Cylinder");
@@ -124,7 +128,7 @@ int main(int args, char** argv)
 		ImGui::End();
 
 		ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_NoResize);
-		ImGui::Image((void*)framerBuffer.GetColorTexture(), ImVec2{ 1000,1000 });
+		ImGui::Image((ImTextureID)framerBuffer.GetColorTexture(), ImVec2{ 1000,1000 });
 		ImGui::End();
 
 		ImGui::Begin("Camera Settings");
@@ -139,44 +143,31 @@ int main(int args, char** argv)
 		{
 			if (ImGui::MenuItem(view.get<Tag>(entity).tag))
 			{
-				//activeOnViewport->m_Entity = entity;
+				//activeEnt->m_Entity = entity;
 			}
+		}
+		if (ImGui::BeginPopupContextWindow(0, ImGuiMouseButton_Right, false))
+		{
+			if (ImGui::MenuItem("Create Empty Entity"))
+			{
+				Entity temp = mainScene.CreateEntity();
+				temp.AddComponent<Tag>("Empty Entity");
+			}
+			ImGui::EndPopup();
 		}
 		ImGui::End();
 
 		ImGui::Begin("Inspector");
-		/*if (activeOnViewport != nullptr)
-			ImGui::Text(activeOnViewport->GetComponent<Tag>().tag);*/
-		for (auto entity : entities)
-		{
-			ImGui::Text(entity.GetComponent<Tag>().tag);
-		}
-
-		ImGui::BeginGroup();
-		ImGui::Text("Transform");
-		float tr[3];
-		ImGui::DragFloat3("Transform", tr, 1.0f, 0.0f, 1.0f, "", ImGuiSliderFlags_None);
-		ImGui::EndGroup();
-		ImGui::Text("Mesh Renderer");
-		if (ImGui::BeginCombo("Components", "RigidBody"))
-		{
-			//ImGui::Combo("Transform",);
-			ImGui::MenuItem("Mesh Renderer");
-			ImGui::MenuItem("RigidBody");
-			ImGui::MenuItem("Mono");
-			ImGui::EndCombo();
-		}
-		if (ImGui::Button("Add Component"))
-		{
-		}
+		ImGui::Text("s");
 		ImGui::End();
 
 		ImGui::Begin("Profiler");
-		ImGui::Text("FPS : %f", (1 / timeDiff));
+		ImGui::Text("FPS : %Lf", (1 / timeDiff));
 		ImGui::End();
 
 		framerBuffer.Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
 		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
 		texture.Bind();
 		model.Draw(defaultShader);

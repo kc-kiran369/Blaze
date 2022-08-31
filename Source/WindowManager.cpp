@@ -1,12 +1,16 @@
 #include "WindowManager.h"
 #include"stb_image/stb_image.h"
 #include<iostream>
+#include"Logger.h"
 
 WindowManager::WindowManager()
 {
 	glfwInit();
 	window = glfwCreateWindow(1000, 1000, "Blaze", nullptr, nullptr);
-	std::cout << (window ? "Window initialized.." : "[Error : Window didn't created]") << std::endl;
+	if (window)
+		Logger::Info("Window initialized");
+	else
+		Logger::Error("Window didn't create");
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -14,21 +18,21 @@ WindowManager::WindowManager()
 
 WindowManager::~WindowManager()
 {
-	std::cout << "Window Manager Out Of Scope..." << std::endl;
+	Logger::Info("Window Manager Out Of Scope...");
 }
 
 void WindowManager::OnAttach()
 {
 	this->SetIcon(this->GetWindow());
 
-	glfwMaximizeWindow(this->GetWindow());
+	//glfwMaximizeWindow(this->GetWindow());
 
 	glfwMakeContextCurrent(this->GetWindow());
 	glfwSwapInterval(1);
 
-	std::cout << "Version : " << glGetString(GL_VERSION) << std::endl;
-	std::cout << "Manufacturer : " << glGetString(GL_RENDERER) << std::endl;
-	std::cout << "Vendor : " << glGetString(GL_VENDOR) << std::endl;
+	Logger::Info("Version : %s", glGetString(GL_VERSION));
+	Logger::Info("Manufacturer : %s", glGetString(GL_RENDERER));
+	Logger::Info("Vendor : %s", glGetString(GL_VENDOR));
 }
 
 void WindowManager::OnDetach()

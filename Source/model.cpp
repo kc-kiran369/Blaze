@@ -1,13 +1,14 @@
 #include "model.h"
+#include"Logger.h"
 
 Model::Model()
 {
-	std::cout << "MODEL CREATED" << std::endl;
+	Logger::Info("Model Created");
 }
 
 Model::~Model()
 {
-	std::cout << "MODEL DELETED" << std::endl;
+	Logger::Info("Model Deleted");
 }
 
 void Model::loadModel(std::string path)
@@ -17,12 +18,12 @@ void Model::loadModel(std::string path)
 
 	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		std::cout << "Model didn't open " << importer.GetErrorString() << std::endl;
+		Logger::Warn("Model didn't load");
 		return;
 	}
 	else
 	{
-		std::cout << "MODEL IMPORTED" << std::endl;
+		Logger::Info("Model loaded");
 	}
 
 	directory = path.substr(0, path.find_last_of('/'));

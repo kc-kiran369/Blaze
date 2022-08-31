@@ -1,6 +1,7 @@
 #include "FrameBuffer.h"
 #include"glew/glew.h"
 #include"Texture.h"
+#include"Logger.h"
 
 FrameBuffer::FrameBuffer()
 {
@@ -31,7 +32,7 @@ FrameBuffer::FrameBuffer()
 		GL_RENDERBUFFER, renderBuffer);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "FrameBuffer Completed" << std::endl;
+		Logger::Info("FrameBuffer Completed");
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
@@ -41,7 +42,7 @@ FrameBuffer::FrameBuffer()
 FrameBuffer::~FrameBuffer()
 {
 	glDeleteFramebuffers(1, &m_RendererID);
-	std::cout << "FrameBuffer Deleted" << std::endl;
+	Logger::Info("FrameBuffer Deleted");
 }
 
 void FrameBuffer::Bind()
