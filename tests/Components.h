@@ -1,5 +1,6 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
+#pragma once
 
 #include"../Source/model.h"
 
@@ -23,9 +24,10 @@ struct Transform
 struct Renderer
 {
 	Model model;
-	std::vector<Texture> textures;
 };
 
 struct RigidBody;
 struct SpiritRenderer;
+struct Light;
+struct Camera;
 #endif

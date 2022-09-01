@@ -31,7 +31,6 @@ int main(int args, char** argv)
 	glewInit();
 
 	Scene mainScene;
-	//std::vector<Entity> entities;
 	Entity* activeEnt = nullptr;
 
 	Camera mainCamera(1000, 1000, glm::vec3{ 5.0f, 5.0f, -15.0f });
@@ -77,7 +76,7 @@ int main(int args, char** argv)
 				{
 					if (Prompt::Open(winManager.GetWindow(), "Any unsaved progress will not be saved", "Are you sure want to exit!!", MB_YESNO | MB_ICONINFORMATION) == IDYES)
 					{
-						exit(EXIT_SUCCESS);
+						glfwSetWindowShouldClose(winManager.GetWindow(), 1);
 					}
 				}
 				ImGui::EndMenu();
@@ -143,22 +142,52 @@ int main(int args, char** argv)
 		{
 			if (ImGui::MenuItem(view.get<Tag>(entity).tag))
 			{
-				//activeEnt->m_Entity = entity;
+				activeEnt->m_Entity = entity;
 			}
 		}
+
 		if (ImGui::BeginPopupContextWindow(0, ImGuiMouseButton_Right, false))
 		{
 			if (ImGui::MenuItem("Create Empty Entity"))
 			{
-				Entity temp = mainScene.CreateEntity();
-				temp.AddComponent<Tag>("Empty Entity");
+				Entity* temp = mainScene.CreateEntity();
+				activeEnt = temp;
 			}
 			ImGui::EndPopup();
 		}
 		ImGui::End();
 
 		ImGui::Begin("Inspector");
-		ImGui::Text("s");
+		if (activeEnt)
+		{
+			ImGui::Text(activeEnt->GetComponent<Tag>().tag);
+			if (!activeEnt->HasComponent<Transform>())
+				ImGui::Text("No Transform Component");
+			else
+			{
+				//ImGui::Columns(2);
+				
+				ImGui::BeginGroup();
+				
+				ImGui::Text("Transform");
+				//ImGui::NextColumn();
+				ImGui::DragFloat("X", &activeEnt->GetComponent<Transform>().transform.X, 0.1f);
+				ImGui::DragFloat("Y", &activeEnt->GetComponent<Transform>().transform.Y, 0.1f);
+				ImGui::DragFloat("Z", &activeEnt->GetComponent<Transform>().transform.Z, 0.1f);
+				ImGui::EndGroup();
+			}
+
+			if (!activeEnt->HasComponent<Renderer>())
+				ImGui::Text("No Renderer Component");
+			else
+			{
+				ImGui::Text("Renderer");
+				if (ImGui::Button("Open Model"))
+				{
+					activeEnt->GetComponent<Renderer>().model.loadModel(FileDialog::OpenFile("*.fbx\0", winManager.GetWindow()));
+				}
+			}
+		}
 		ImGui::End();
 
 		ImGui::Begin("Profiler");
@@ -167,9 +196,12 @@ int main(int args, char** argv)
 
 		framerBuffer.Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
 		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
 		texture.Bind();
+		for (auto entity : mainScene.entities)
+		{
+			entity->GetComponent<Renderer>().model.Draw(defaultShader);
+		}
 		model.Draw(defaultShader);
 		framerBuffer.UnBind();
 

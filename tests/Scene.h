@@ -12,10 +12,11 @@ public:
 	Scene();
 	~Scene();
 
-	Entity CreateEntity();
+	Entity* CreateEntity();
 	void DestroyEntity(Entity entity);
 	entt::registry m_Registry;
 
+	std::vector<Entity*> entities;
 	friend class Entity;
 private:
 };
