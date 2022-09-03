@@ -1,7 +1,5 @@
-
-/bin
-/int
-/External/ 
+/External
+/Build
 
 *.sln
 *.vcxproj

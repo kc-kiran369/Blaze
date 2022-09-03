@@ -5,7 +5,7 @@ Entity::Entity(entt::entity entity, Scene* scene)
 {
 	m_Entity = entity;
 	m_Scene = scene;
-	Logger::Warn("Entity Created");
+	Logger::Info("Entity Created");
 }
 
 Entity::~Entity()

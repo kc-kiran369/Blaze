@@ -11,8 +11,10 @@ public:
 
 	void OnAttach();
 	void OnDetach();
-	void Begin();
-	void End();
+	void OnUpdate();
+	void OnUpdateComplete();
+
+	float deltaTime();
 
 	GLFWwindow* GetWindow();
 
@@ -20,5 +22,6 @@ public:
 
 private:
 	GLFWwindow* window;
+	float currTime = 0.0f, preTime = 0.0f, timeDiff = 0.0f;
 };
 #endif

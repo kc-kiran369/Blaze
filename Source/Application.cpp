@@ -47,9 +47,10 @@ int main(int args, char** argv)
 
 	FrameBuffer framerBuffer;
 
-	glEnable(GL_DEPTH_TEST);
+	char name[15] = { 0 };
 
-	double currTime = 0.0f, preTime = 0.0f, timeDiff = 0.0f;
+
+	glEnable(GL_DEPTH_TEST);
 
 	while (!glfwWindowShouldClose(winManager.GetWindow()))
 	{
@@ -59,8 +60,7 @@ int main(int args, char** argv)
 
 		defaultShader.SetVec4("_ambientColor", ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
 
-		currTime = glfwGetTime();
-		timeDiff = currTime - preTime;
+		winManager.OnUpdate();
 
 		ui.Begin();
 
@@ -74,7 +74,7 @@ int main(int args, char** argv)
 				ImGui::MenuItem("Save as", "Ctrl+S");
 				if (ImGui::MenuItem("Exit", "Ctrl+Q"))
 				{
-					if (Prompt::Open(winManager.GetWindow(), "Any unsaved progress will not be saved", "Are you sure want to exit!!", MB_YESNO | MB_ICONINFORMATION) == IDYES)
+					if (Prompt::Open(winManager.GetWindow(), "Any unsaved progress will be lost", "Are you sure want to exit!!", MB_YESNO | MB_ICONINFORMATION) == IDYES)
 					{
 						glfwSetWindowShouldClose(winManager.GetWindow(), 1);
 					}
@@ -143,16 +143,22 @@ int main(int args, char** argv)
 			if (ImGui::MenuItem(view.get<Tag>(entity).tag))
 			{
 				activeEnt->m_Entity = entity;
+
 			}
 		}
 
 		if (ImGui::BeginPopupContextWindow(0, ImGuiMouseButton_Right, false))
 		{
-			if (ImGui::MenuItem("Create Empty Entity"))
+			if (ImGui::MenuItem("Empty Entity"))
 			{
 				Entity* temp = mainScene.CreateEntity();
 				activeEnt = temp;
 			}
+			if (ImGui::MenuItem("Cube")) {}
+			if (ImGui::MenuItem("Cylinder")) {}
+			if (ImGui::MenuItem("Sphere")) {}
+			if (ImGui::MenuItem("Cone")) {}
+			if (ImGui::MenuItem("Import..")) {}
 			ImGui::EndPopup();
 		}
 		ImGui::End();
@@ -161,16 +167,22 @@ int main(int args, char** argv)
 		if (activeEnt)
 		{
 			ImGui::Text(activeEnt->GetComponent<Tag>().tag);
+
+			if (ImGui::InputText("Rename", name, sizeof(name)))
+			{
+				if (name[0] != '\0')
+				{
+					activeEnt->GetComponent<Tag>().tag = name;
+				}
+			}
+
 			if (!activeEnt->HasComponent<Transform>())
 				ImGui::Text("No Transform Component");
 			else
 			{
-				//ImGui::Columns(2);
-				
 				ImGui::BeginGroup();
-				
 				ImGui::Text("Transform");
-				//ImGui::NextColumn();
+
 				ImGui::DragFloat("X", &activeEnt->GetComponent<Transform>().transform.X, 0.1f);
 				ImGui::DragFloat("Y", &activeEnt->GetComponent<Transform>().transform.Y, 0.1f);
 				ImGui::DragFloat("Z", &activeEnt->GetComponent<Transform>().transform.Z, 0.1f);
@@ -182,7 +194,7 @@ int main(int args, char** argv)
 			else
 			{
 				ImGui::Text("Renderer");
-				if (ImGui::Button("Open Model"))
+				if (ImGui::Button("Select Mesh"))
 				{
 					activeEnt->GetComponent<Renderer>().model.loadModel(FileDialog::OpenFile("*.fbx\0", winManager.GetWindow()));
 				}
@@ -191,7 +203,7 @@ int main(int args, char** argv)
 		ImGui::End();
 
 		ImGui::Begin("Profiler");
-		ImGui::Text("FPS : %Lf", (1 / timeDiff));
+		ImGui::Text("FPS : %f", winManager.deltaTime());
 		ImGui::End();
 
 		framerBuffer.Bind();
@@ -207,9 +219,9 @@ int main(int args, char** argv)
 
 		ui.End();
 		mainCamera.Input(winManager.GetWindow());
-		winManager.End();
-		preTime = currTime;
+		winManager.OnUpdateComplete();
 	}
 	ui.OnDetach();
 	winManager.OnDetach();
+	return EXIT_SUCCESS;
 }

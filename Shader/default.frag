@@ -1,4 +1,4 @@
-#version 330 core
+#version 450 core
 
 struct Material {
 	vec3 ambient;
@@ -17,12 +17,12 @@ uniform sampler2D _texture;
 
 uniform vec4 _ambientColor;
 
-vec3 lightPos = {5.0f,5.0f,5.0f};
+vec3 lightPos = {0.0f,10.0f,10.0f};
 
 void main()
 {
 	vec3 norm = normalize(_normal);
 	vec3 lightDir = normalize(lightPos - _position);
 	float diff = max(dot(norm,lightDir),0.0f);
-	gl_FragColor = texture(_texture,_texCoord) * (_ambientColor+diff);
+	gl_FragColor = texture(_texture,_texCoord);
 }

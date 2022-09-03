@@ -11,6 +11,10 @@ Scene::Scene()
 Scene::~Scene()
 {
 	Logger::Info("Scene out of scope");
+	for (auto entity : entities)
+	{
+		delete entity;
+	}
 }
 
 Entity* Scene::CreateEntity()
@@ -18,7 +22,7 @@ Entity* Scene::CreateEntity()
 	Entity* entity = new Entity(m_Registry.create(), this);
 	entity->AddComponent<Tag>("Entity");
 	entity->AddComponent<Transform>();
-	entity->AddComponent<Renderer>();
+	entity->AddComponent<Renderer>().model;
 	entities.push_back(entity);
 	return entity;
 }

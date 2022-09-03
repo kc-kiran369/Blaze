@@ -6,28 +6,23 @@
 
 class Timer
 {
+private:
+	std::chrono::time_point<std::chrono::high_resolution_clock> m_Start, m_End;
+	std::chrono::duration<float> m_Diff;
 public:
 	Timer()
 	{
-		Reset();
-	}
-
-	void Reset()
-	{
 		m_Start = std::chrono::high_resolution_clock::now();
 	}
-
-	float Elapsed()
+	~Timer()
 	{
-		return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - m_Start).count() * 0.001f * 0.001f * 0.001f;
-	}
 
-	float ElapsedMillis()
+	}
+	float Stop()
 	{
-		return Elapsed() * 1000.0f;
+		m_End = std::chrono::high_resolution_clock::now();
+		m_Diff = m_End - m_Start;
+		return m_Diff.count()/1000;
 	}
-
-private:
-	std::chrono::time_point<std::chrono::high_resolution_clock> m_Start;
 };
 #endif

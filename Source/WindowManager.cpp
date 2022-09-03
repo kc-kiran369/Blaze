@@ -11,9 +11,9 @@ WindowManager::WindowManager()
 		Logger::Info("Window initialized");
 	else
 		Logger::Error("Window didn't create");
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	/*glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
 }
 
 WindowManager::~WindowManager()
@@ -24,9 +24,7 @@ WindowManager::~WindowManager()
 void WindowManager::OnAttach()
 {
 	this->SetIcon(this->GetWindow());
-
 	//glfwMaximizeWindow(this->GetWindow());
-
 	glfwMakeContextCurrent(this->GetWindow());
 	glfwSwapInterval(1);
 
@@ -40,15 +38,22 @@ void WindowManager::OnDetach()
 	glfwTerminate();
 }
 
-void WindowManager::Begin()
+void WindowManager::OnUpdate()
 {
-
+	currTime = glfwGetTime();
+	timeDiff = currTime - preTime;
 }
 
-void WindowManager::End()
+void WindowManager::OnUpdateComplete()
 {
 	glfwPollEvents();
 	glfwSwapBuffers(this->GetWindow());
+	preTime = currTime;
+}
+
+float WindowManager::deltaTime()
+{
+	return (1 / timeDiff);
 }
 
 GLFWwindow* WindowManager::GetWindow()
