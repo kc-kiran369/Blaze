@@ -20,6 +20,9 @@
 
 #include"Logger.h"
 
+#include"Timer.h"
+
+
 int main(int args, char** argv)
 {
 	Logger::Info(argv[0]);
@@ -31,6 +34,7 @@ int main(int args, char** argv)
 	glewInit();
 
 	Scene mainScene;
+	auto view = mainScene.m_Registry.view<Tag>();
 	Entity* activeEnt = nullptr;
 
 	Camera mainCamera(1000, 1000, glm::vec3{ 5.0f, 5.0f, -15.0f });
@@ -48,20 +52,14 @@ int main(int args, char** argv)
 	FrameBuffer framerBuffer;
 
 	char name[15] = { 0 };
-
+	float lastRenderTime = 0.0f;
 
 	glEnable(GL_DEPTH_TEST);
 
 	while (!glfwWindowShouldClose(winManager.GetWindow()))
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(32.0f / 255.0f, 32.0f / 255.0f, 32.0f / 255.0f, 1.0f);
 		mainCamera.UpdateMatrix(45.0f, 0.1f, 1000.0f, _model, defaultShader);
-
-		defaultShader.SetVec4("_ambientColor", ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
-
 		winManager.OnUpdate();
-
 		ui.Begin();
 
 #pragma region MainMenuBar
@@ -121,7 +119,10 @@ int main(int args, char** argv)
 
 		ImGui::Begin("Lightning");
 		if (ImGui::TreeNode("Basic")) {
-			ImGui::ColorEdit4("Ambient Color", ambientColor, ImGuiColorEditFlags_NoInputs);
+			if (ImGui::ColorEdit4("Ambient Color", ambientColor, ImGuiColorEditFlags_NoInputs))
+			{
+				defaultShader.SetVec4("_ambientColor", ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
+			}
 			ImGui::TreePop();
 		}
 		ImGui::End();
@@ -137,13 +138,13 @@ int main(int args, char** argv)
 
 		ImGui::Begin("Hierarchy");
 		ImGui::Text("Total entities : %d", mainScene.m_Registry.size());
-		auto view = mainScene.m_Registry.view<Tag>();
 		for (auto entity : view)
 		{
-			if (ImGui::MenuItem(view.get<Tag>(entity).tag))
+			if (ImGui::MenuItem(view.get<Tag>(entity).tag, (const char*)0, (
+				activeEnt->GetComponent<Tag>().tag == view.get<Tag>(entity).tag
+				? true : false), true))
 			{
 				activeEnt->m_Entity = entity;
-
 			}
 		}
 
@@ -170,9 +171,13 @@ int main(int args, char** argv)
 
 			if (ImGui::InputText("Rename", name, sizeof(name)))
 			{
-				if (name[0] != '\0')
+				if (name[0] != '\0' || name[0] != 0)
 				{
 					activeEnt->GetComponent<Tag>().tag = name;
+				}
+				else
+				{
+					Logger::Warn("Name is empty");
 				}
 			}
 
@@ -204,6 +209,7 @@ int main(int args, char** argv)
 
 		ImGui::Begin("Profiler");
 		ImGui::Text("FPS : %f", winManager.deltaTime());
+		ImGui::Text("Last Render Time : %dms", 0.0f);
 		ImGui::End();
 
 		framerBuffer.Bind();
@@ -212,7 +218,9 @@ int main(int args, char** argv)
 		texture.Bind();
 		for (auto entity : mainScene.entities)
 		{
+			Timer timer;
 			entity->GetComponent<Renderer>().model.Draw(defaultShader);
+			lastRenderTime = timer.Stop();
 		}
 		model.Draw(defaultShader);
 		framerBuffer.UnBind();

@@ -15,5 +15,5 @@ void main()
 	_position = position;
 	_normal = normal;
 	_texCoord = texCoord;
-	gl_Position = MVP*vec4(position,1.0f);	
+	gl_Position = MVP * vec4(position,1.0f);	
 }

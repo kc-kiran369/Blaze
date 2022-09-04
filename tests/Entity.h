@@ -3,6 +3,7 @@
 
 #include"ENTT/entt.hpp"
 #include"Scene.h"
+#include"../Source/Logger.h"
 
 class Entity
 {
@@ -27,17 +28,27 @@ public:
 template<typename T, typename ...Args>
 inline T& Entity::AddComponent(Args&& ...args)
 {
-	/*if (m_Scene->m_Registry.all_of<T>(m_Entity))
+	if (HasComponent<T>())
 	{
-		std::cout << "Component Already exists." << std::endl;
-	}*/
-	return m_Scene->m_Registry.emplace<T>(m_Entity, std::forward<Args>(args)...);
+		Logger::Warn("Component already exists");
+	}
+	else
+	{
+		return m_Scene->m_Registry.emplace<T>(m_Entity, std::forward<Args>(args)...);
+	}
 }
 
 template<typename T>
 inline T& Entity::GetComponent()
 {
-	return m_Scene->m_Registry.get<T>(m_Entity);
+	if (HasComponent<T>())
+	{
+		return m_Scene->m_Registry.get<T>(m_Entity);
+	}
+	else
+	{
+		Logger::Warn("Component doesnot exists");
+	}
 }
 
 template<typename T>

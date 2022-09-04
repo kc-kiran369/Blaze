@@ -40,6 +40,8 @@ void WindowManager::OnDetach()
 
 void WindowManager::OnUpdate()
 {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(32.0f / 255.0f, 32.0f / 255.0f, 32.0f / 255.0f, 1.0f);
 	currTime = glfwGetTime();
 	timeDiff = currTime - preTime;
 }

@@ -123,8 +123,12 @@ std::vector<Texture> Model::loadTextures(aiMaterial* mat, aiTextureType type)
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 	{
 		aiString str;
+		aiString name;
 		mat->GetTexture(type, i, &str);
 		Logger::Info(str.C_Str());
+		name = mat->GetName();
+		Logger::Info(name.C_Str());
 	}
+	Logger::Warn("Total %d textures", textures.size());
 	return textures;
 }
