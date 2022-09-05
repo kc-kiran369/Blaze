@@ -2,7 +2,8 @@
 #define SCENE_H
 
 #include"ENTT/entt.hpp"
-#include "Components.h"
+#include"Benchmark/Logger.h"
+#include"ECS/Component/Components.h"
 
 class Entity;
 
@@ -12,12 +13,13 @@ public:
 	Scene();
 	~Scene();
 
+	friend class Entity;
+
 	Entity* CreateEntity();
 	void DestroyEntity(Entity entity);
 	entt::registry m_Registry;
 
 	std::vector<Entity*> entities;
-	friend class Entity;
 private:
 };
 #endif

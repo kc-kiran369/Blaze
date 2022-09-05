@@ -1,8 +1,7 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
-#pragma once
 
-#include"../Source/model.h"
+#include"../Source/Renderer/model.h"
 
 struct Tag
 {

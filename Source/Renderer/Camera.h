@@ -2,13 +2,16 @@
 #define CAMERA_CLASS_H
 
 #include"glew/glew.h"
+#include <iostream>
 #include"glfw/glfw3.h"
 #include<glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_ptr.hpp>
 #include<glm/gtx/rotate_vector.hpp>
 #include<glm/gtx/vector_angle.hpp>
+
 #include"Shader.h"
+#include"Renderer/Shader.h"
 
 class Camera
 {

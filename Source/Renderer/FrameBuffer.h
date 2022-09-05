@@ -1,6 +1,9 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 
+#include"glew/glew.h"
+#include"Benchmark/Logger.h"
+
 class FrameBuffer
 {
 private:

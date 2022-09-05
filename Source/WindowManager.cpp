@@ -1,7 +1,6 @@
-#include "WindowManager.h"
-#include"stb_image/stb_image.h"
-#include<iostream>
-#include"Logger.h"
+
+#include"Core/WindowManager.h"
+
 
 WindowManager::WindowManager()
 {

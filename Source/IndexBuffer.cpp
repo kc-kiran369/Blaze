@@ -1,4 +1,4 @@
-#include"IndexBuffer.h"
+#include"Renderer/IndexBuffer.h"
 
 IndexBuffer::IndexBuffer(unsigned int size, void* data)
 {

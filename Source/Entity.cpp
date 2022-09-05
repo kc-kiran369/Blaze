@@ -1,5 +1,5 @@
-#include"Entity.h"
-#include"../Source/Logger.h"
+#include"ECS/Entity.h"
+
 
 Entity::Entity(entt::entity entity, Scene* scene)
 {

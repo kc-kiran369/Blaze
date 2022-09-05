@@ -1,9 +1,11 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include<iostream>
 #include"ENTT/entt.hpp"
-#include"Scene.h"
-#include"../Source/Logger.h"
+
+#include"../Benchmark/Logger.h"
+#include"../ECS/Scene.h"
 
 class Entity
 {

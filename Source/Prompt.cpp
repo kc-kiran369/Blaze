@@ -1,4 +1,4 @@
-#include"Prompt.h"
+#include"Windows/Prompt.h"
 
 int Prompt::Open(GLFWwindow* window, const char* description, const char* title, unsigned int type)
 {

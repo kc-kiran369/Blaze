@@ -1,12 +1,15 @@
 #ifndef TEXTURE_CLASS_H
 #define TEXTURE_CLASS_H
 
+#include"glew/glew.h"
+
 #ifndef STBI_INCLUDE_STB_IMAGE_H
 #include"stb_image/stb_image.h"
 #endif
 
 #include <iostream>
-#include"glew/glew.h"
+
+#include"Benchmark/Logger.h"
 
 class Texture
 {

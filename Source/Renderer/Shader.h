@@ -1,10 +1,10 @@
 #ifndef SHADER_CLASS_H
 #define SHADER_CLASS_H
 
-#include<string>
 #include"glew/glew.h"
+#include<string>
 #include"glm/matrix.hpp"
-#include"ShaderUtils.h"
+#include"Renderer/ShaderUtils.h"
 
 class Shader
 {

@@ -1,7 +1,4 @@
-#include "FrameBuffer.h"
-#include"glew/glew.h"
-#include"Texture.h"
-#include"Logger.h"
+#include"Renderer/FrameBuffer.h"
 
 FrameBuffer::FrameBuffer()
 {

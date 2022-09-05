@@ -3,11 +3,9 @@
 
 #include <stdio.h>
 #include<Windows.h>
-//#include<window>
 
 class Logger
 {
-	//HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 public:
 	template<typename... Args>
 	static void Info(const char* message, Args... args)

@@ -1,7 +1,5 @@
-#include"Scene.h"
-#include"Components.h"
-#include"Entity.h"
-#include"../Source/Logger.h"
+#include"ECS/Scene.h"
+#include"ECS/Entity.h"
 
 Scene::Scene()
 {

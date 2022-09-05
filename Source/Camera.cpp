@@ -1,5 +1,4 @@
-#include <iostream>
-#include"Camera.h"
+#include"Renderer/Camera.h"
 
 Camera::Camera(int _width, int _height, glm::vec3 _position)
 	:width(_width), height(_height), Position(_position)

@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 
-#include <GLEW/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -16,7 +15,14 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "mesh.h"
+#include"mesh.h"
+#include"Texture.h"
+#include"Shader.h"
+
+#include <GLEW/glew.h>
+
+#include"Benchmark/Logger.h"
+
 
 class Model
 {

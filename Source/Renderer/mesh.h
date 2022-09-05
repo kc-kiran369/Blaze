@@ -1,15 +1,16 @@
 #ifndef MESH_H
 #define MESH_H
 
+#include <glew/glew.h>
+
 #include <vector>
 #include <iostream>
 
-#include <glew/glew.h>
 #include <glfw/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include"shader.h"
+#include"Shader.h"
 #include"Texture.h"
 
 struct Vertex 

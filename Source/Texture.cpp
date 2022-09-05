@@ -1,5 +1,4 @@
-#include "Texture.h"
-#include"Logger.h"
+#include"Renderer/Texture.h"
 
 Texture::Texture(const char* path, unsigned int slot)
 {

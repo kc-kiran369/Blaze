@@ -6,21 +6,23 @@
 #include"glew/glew.h"
 #include"glfw/glfw3.h"
 
-#include"CoreUI.h"
-#include"Texture.h"
-#include"Camera.h"
-#include"FrameBuffer.h"
-#include"WindowManager.h"
-#include"Model.h"
-#include"FileDialog.h"
-#include"Prompt.h"
+#include"ECS/Entity.h"
+#include"ECS/Scene.h"
+#include"ECS/Component/Components.h"
+#include"Renderer/Camera.h"
+#include"Renderer/FrameBuffer.h"
+#include"Renderer/Shader.h"
+#include"Renderer/model.h"
+#include"Renderer/Texture.h"
 
-#include"../tests/Scene.h"
-#include"../tests/Entity.h"
+#include"Windows/FileDialog.h"
+#include"Windows/Prompt.h"
 
-#include"Logger.h"
+#include"Benchmark/Timer.h"
 
-#include"Timer.h"
+#include"Benchmark/Logger.h"
+#include"Core/WindowManager.h"
+#include"UI/CoreUI.h"
 
 
 int main(int args, char** argv)

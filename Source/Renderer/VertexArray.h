@@ -1,8 +1,8 @@
 #ifndef VERTEX_ARRAY_CLASS_H
 #define VERTEX_ARRAY_CLASS_H
 
-#include"VertexBuffer.h"
 #include"glew/glew.h"
+#include"VertexBuffer.h"
 
 class VertexArray
 {

@@ -1,7 +1,12 @@
 #ifndef WINDOW_MANAGER_H
 #define WINDOW_MANAGER_H
 
+#include<iostream>
 #include<glfw/glfw3.h>
+#ifndef STB_IMAGE_IMPLEMENTATION
+#include"stb_image/stb_image.h"
+#endif
+#include"Benchmark/Logger.h"
 
 class WindowManager
 {
