@@ -1,5 +1,4 @@
 
-
 #include"Renderer/ShaderUtils.h"
 
 unsigned int CompileShader(unsigned int type, std::string& src)
@@ -12,7 +11,6 @@ unsigned int CompileShader(unsigned int type, std::string& src)
 	glGetShaderiv(id, GL_COMPILE_STATUS, &result);
 	if (result == GL_FALSE)
 	{
-		//std::cout << "Error at " << (type == GL_VERTEX_SHADER ? "vertex shader" : "fragment shader") << std::endl;
 		Logger::Error("Error at %s", (type == GL_VERTEX_SHADER ? "vertex shader" : "fragment shader"));
 		int length;
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
@@ -40,7 +38,7 @@ unsigned int CreateShader(std::string& vertexSrc, std::string& fragmentSrc)
 	return program;
 }
 
-std::string ParseShader(const char* path)
+std::string ShaderReader(const char* path)
 {
 	std::ifstream inp(path);
 	if (!inp.is_open())

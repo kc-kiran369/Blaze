@@ -24,6 +24,9 @@
 #include"Core/WindowManager.h"
 #include"UI/CoreUI.h"
 
+#include"Blaze.h"
+
+#include"Benchmark/AllocationTracer.h"
 
 int main(int args, char** argv)
 {
@@ -37,13 +40,13 @@ int main(int args, char** argv)
 
 	Scene mainScene;
 	auto view = mainScene.m_Registry.view<Tag>();
+	auto Rview = mainScene.m_Registry.view<Renderer>();
 	Entity* activeEnt = nullptr;
 
 	Camera mainCamera(1000, 1000, glm::vec3{ 5.0f, 5.0f, -15.0f });
 
-	Shader defaultShader("Shader\\default.vert", "Shader\\default.frag");
-	Shader brightShader("Shader\\default.vert", "Shader\\BrightColor.frag");
-	Model model;
+	Shader standardShader("Shader\\standard.vert", "Shader\\standard.frag");
+	//Shader brightShader("Shader\\standard.vert", "Shader\\Light.frag");
 	Texture texture("Resources\\Images\\MedievalhouseDiffuse.jpg", 0);
 
 	glm::mat4 _model = glm::mat4(1.0f);
@@ -56,74 +59,25 @@ int main(int args, char** argv)
 	char name[15] = { 0 };
 	float lastRenderTime = 0.0f;
 
-	glEnable(GL_DEPTH_TEST);
-
 	while (!glfwWindowShouldClose(winManager.GetWindow()))
 	{
-		mainCamera.UpdateMatrix(45.0f, 0.1f, 1000.0f, _model, defaultShader);
+		mainCamera.UpdateMatrix(45.0f, 0.1f, 1000.0f, _model, standardShader);
 		winManager.OnUpdate();
 		ui.Begin();
 
-#pragma region MainMenuBar
-		if (ImGui::BeginMainMenuBar())
-		{
-			if (ImGui::BeginMenu("File"))
-			{
-				ImGui::MenuItem("Open", "Ctrl+O");
-				ImGui::MenuItem("New", "Ctrl+N");
-				ImGui::MenuItem("Save as", "Ctrl+S");
-				if (ImGui::MenuItem("Exit", "Ctrl+Q"))
-				{
-					if (Prompt::Open(winManager.GetWindow(), "Any unsaved progress will be lost", "Are you sure want to exit!!", MB_YESNO | MB_ICONINFORMATION) == IDYES)
-					{
-						glfwSetWindowShouldClose(winManager.GetWindow(), 1);
-					}
-				}
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Edit"))
-			{
-				if (ImGui::MenuItem("Preferences"))
-				{
+		ui.OnGuiUpdate(winManager);
 
-				}
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("View"))
-			{
-				ImGui::MenuItem("Hide All Panels");
-				ImGui::MenuItem("Property Panel");
-				ImGui::MenuItem("Grid");
-				ImGui::MenuItem("Zoom in  -");
-				ImGui::MenuItem("Zoom out +");
-				ImGui::MenuItem("Reset Camera +");
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Add"))
-			{
-				if (ImGui::MenuItem("Empty Entity"))
-				{
-
-				}
-				ImGui::MenuItem("Cone");
-				ImGui::MenuItem("Cylinder");
-				ImGui::MenuItem("Sphere");
-				if (ImGui::MenuItem("Import Model.."))
-				{
-					std::string path = FileDialog::OpenFile("*.fbx\0", winManager.GetWindow());
-					model.loadModel(path);
-				}
-				ImGui::EndMenu();
-			}
-			ImGui::EndMainMenuBar();
-		}
-#pragma endregion
+		ImGui::Begin("Camera Debug");
+		ImGui::Text("Position X : %f Y : %f Z : %f", mainCamera.Position.x, mainCamera.Position.y, mainCamera.Position.z);
+		ImGui::Text("Orientation X : %f Y : %f Z : %f", mainCamera.Orientation.x, mainCamera.Orientation.y, mainCamera.Orientation.z);
+		ImGui::Text("Up X : %f Y : %f Z : %f", mainCamera.Up.x, mainCamera.Up.y, mainCamera.Up.z);
+		ImGui::End();
 
 		ImGui::Begin("Lightning");
 		if (ImGui::TreeNode("Basic")) {
 			if (ImGui::ColorEdit4("Ambient Color", ambientColor, ImGuiColorEditFlags_NoInputs))
 			{
-				defaultShader.SetVec4("_ambientColor", ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
+				standardShader.SetVec4("_ambientColor", ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
 			}
 			ImGui::TreePop();
 		}
@@ -134,17 +88,16 @@ int main(int args, char** argv)
 		ImGui::End();
 
 		ImGui::Begin("Camera Settings");
-		ImGui::SliderFloat("Sensitivity", &mainCamera.sensitivity, 20.0f, 50.0f, std::to_string(mainCamera.sensitivity).c_str(), 1.0f);
-		ImGui::SliderFloat("Speed", &mainCamera.speed, 0.01f, 1.0f, std::to_string(mainCamera.speed).c_str(), 1.0f);
+		ImGui::SliderFloat("Sensitivity", &mainCamera.sensitivity, 20.0f, 50.0f, "%.2f", 1.0f);
+		ImGui::SliderFloat("Speed", &mainCamera.speed, 0.01f, 1.0f, "%.3f", 1.0f);
 		ImGui::End();
 
 		ImGui::Begin("Hierarchy");
 		ImGui::Text("Total entities : %d", mainScene.m_Registry.size());
 		for (auto entity : view)
 		{
-			if (ImGui::MenuItem(view.get<Tag>(entity).tag, (const char*)0, (
-				activeEnt->GetComponent<Tag>().tag == view.get<Tag>(entity).tag
-				? true : false), true))
+
+			if (ImGui::MenuItem(view.get<Tag>(entity).tag.c_str(), (const char*)0, (activeEnt ? (activeEnt->GetComponent<Tag>().tag == view.get<Tag>(entity).tag ? true : false) : false), true))
 			{
 				activeEnt->m_Entity = entity;
 			}
@@ -155,7 +108,8 @@ int main(int args, char** argv)
 			if (ImGui::MenuItem("Empty Entity"))
 			{
 				Entity* temp = mainScene.CreateEntity();
-				activeEnt = temp;
+				if (mainScene.m_Registry.size() == 1)
+					activeEnt = temp;
 			}
 			if (ImGui::MenuItem("Cube")) {}
 			if (ImGui::MenuItem("Cylinder")) {}
@@ -166,12 +120,27 @@ int main(int args, char** argv)
 		}
 		ImGui::End();
 
-		ImGui::Begin("Inspector");
+		ImGui::Begin("Entity Debugger");
 		if (activeEnt)
 		{
-			ImGui::Text(activeEnt->GetComponent<Tag>().tag);
+			ImGui::Text("Entity ID : %d", activeEnt->m_Entity);
+			ImGui::Text("Entity Name : %s", activeEnt->GetComponent<Tag>().tag.c_str());
+		}
+		ImGui::End();
 
-			if (ImGui::InputText("Rename", name, sizeof(name)))
+		ImGui::Begin("view view");
+		for (auto ent : view)
+		{
+			ImGui::Text("%s", view.get<Tag>(ent).tag);
+		}
+		ImGui::End();
+
+		ImGui::Begin("Property");
+		if (activeEnt)
+		{
+			ImGui::Text(activeEnt->GetComponent<Tag>().tag.c_str());
+
+			/*if (ImGui::InputText("Rename", name, sizeof(name)))
 			{
 				if (name[0] != '\0' || name[0] != 0)
 				{
@@ -181,18 +150,32 @@ int main(int args, char** argv)
 				{
 					Logger::Warn("Name is empty");
 				}
-			}
+			}*/
 
 			if (!activeEnt->HasComponent<Transform>())
 				ImGui::Text("No Transform Component");
 			else
 			{
 				ImGui::BeginGroup();
+				ImGui::Columns(2, 0, false);
 				ImGui::Text("Transform");
+				ImGui::NextColumn();
+				if (ImGui::Button("_X_"))
+				{
 
-				ImGui::DragFloat("X", &activeEnt->GetComponent<Transform>().transform.X, 0.1f);
-				ImGui::DragFloat("Y", &activeEnt->GetComponent<Transform>().transform.Y, 0.1f);
-				ImGui::DragFloat("Z", &activeEnt->GetComponent<Transform>().transform.Z, 0.1f);
+				}
+				ImGui::Columns(1);
+
+				glm::vec3 temp = glm::vec3(0);
+				if (ImGui::SliderFloat("x", &temp.x, -10.0f, 10.0f, "%.3f", 1.0f))
+				{
+					activeEnt->GetComponent<Transform>().transform = temp;
+					_model = glm::translate(_model, temp);
+				}
+				if (ImGui::SliderFloat("y", &temp.y, -100.0f, 100.0f, "%.3f", 1.0f))
+					activeEnt->GetComponent<Transform>().transform += temp;
+				if (ImGui::SliderFloat("z", &temp.z, -100.0f, 100.0f, "%.3f", 1.0f))
+					activeEnt->GetComponent<Transform>().transform += temp;
 				ImGui::EndGroup();
 			}
 
@@ -201,10 +184,14 @@ int main(int args, char** argv)
 			else
 			{
 				ImGui::Text("Renderer");
-				if (ImGui::Button("Select Mesh"))
-				{
-					activeEnt->GetComponent<Renderer>().model.loadModel(FileDialog::OpenFile("*.fbx\0", winManager.GetWindow()));
-				}
+				if (activeEnt->GetComponent<Renderer>().hasModel)
+					ImGui::Text("It already has model");
+				else
+					if (ImGui::Button("Select Mesh"))
+					{
+						activeEnt->GetComponent<Renderer>().model.loadModel(FileDialog::OpenFile("*.fbx\0", winManager.GetWindow()));
+						activeEnt->GetComponent<Renderer>().hasModel = true;
+					}
 			}
 		}
 		ImGui::End();
@@ -218,13 +205,17 @@ int main(int args, char** argv)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
 		texture.Bind();
-		for (auto entity : mainScene.entities)
+		//for (auto entity : mainScene.entities)
+		//{
+		//	//Timer timer;
+		//	entity->GetComponent<Renderer>().model.Draw(standardShader);
+		//	//lastRenderTime = timer.Stop();
+		//}
+		for (auto ent : Rview)
 		{
-			Timer timer;
-			entity->GetComponent<Renderer>().model.Draw(defaultShader);
-			lastRenderTime = timer.Stop();
+			Rview.get<Renderer>(ent).model.Draw(standardShader);
 		}
-		model.Draw(defaultShader);
+		//model.Draw(standardShader);
 		framerBuffer.UnBind();
 
 		ui.End();

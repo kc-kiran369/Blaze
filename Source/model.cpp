@@ -1,5 +1,6 @@
-#include"Renderer/model.h"
+#pragma warning (disable: 26812)
 
+#include"Renderer/model.h"
 
 Model::Model()
 {
@@ -24,9 +25,12 @@ void Model::loadModel(std::string path)
 	else
 	{
 		Logger::Info("Model loaded");
+		m_Loaded = true;
 	}
 
-	directory = path.substr(0, path.find_last_of('/'));
+	if (m_Loaded)
+		meshes.clear();
+	//directory = path.substr(0, path.find_last_of('/'));
 	processNode(scene->mRootNode, scene);
 }
 
@@ -37,6 +41,7 @@ void Model::Draw(Shader& shader)
 		meshes[i].Draw(shader);
 	}
 }
+
 void Model::processNode(aiNode* node, const aiScene* scene)
 {
 	aiMesh* mesh;

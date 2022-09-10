@@ -34,7 +34,8 @@ public:
 
 private:
 	std::vector<Mesh> meshes;
-	std::string directory;
+	//std::string directory;
+	bool m_Loaded = false;
 
 	void processNode(aiNode* node, const aiScene* scene);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);

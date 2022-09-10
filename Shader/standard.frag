@@ -21,8 +21,9 @@ vec3 lightPos = {0.0f,10.0f,10.0f};
 
 void main()
 {
-	vec3 norm = normalize(_normal);
-	vec3 lightDir = normalize(lightPos - _position);
-	float diff = max(dot(norm,lightDir),0.0f);
+//	vec3 lightDir = normalize(lightPos - _position);
+//	float angle = max(dot(lightDir,normalize(_normal)),0.0f);
+//	float angle = max(dot(normalize(_normal),lightDir),0.0f);
 	gl_FragColor = texture(_texture,_texCoord);
+//	gl_FragColor = texture(_texture,_texCoord) * (angle +_ambientColor);
 }

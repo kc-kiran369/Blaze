@@ -1,6 +1,5 @@
 #include"Renderer/mesh.h"
 
-
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
 {
 	this->vertices = vertices;

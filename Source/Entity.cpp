@@ -1,6 +1,5 @@
 #include"ECS/Entity.h"
 
-
 Entity::Entity(entt::entity entity, Scene* scene)
 {
 	m_Entity = entity;

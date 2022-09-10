@@ -50,6 +50,11 @@ void CoreUI::End()
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+void CoreUI::OnGuiUpdate(WindowManager& windowManager)
+{
+	MainMenuBar(windowManager);
+}
+
 void CoreUI::SetDarkThemeColors()
 {
 	ImGuiStyle* style = &ImGui::GetStyle();

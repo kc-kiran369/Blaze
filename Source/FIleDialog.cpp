@@ -1,6 +1,5 @@
 #include"Windows/FileDialog.h"
 
-
 std::string FileDialog::OpenFile(const char* filter, GLFWwindow* window)
 {
 	OPENFILENAMEA ofn;

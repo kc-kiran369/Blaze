@@ -1,6 +1,4 @@
-
 #include"Core/WindowManager.h"
-
 
 WindowManager::WindowManager()
 {
@@ -10,9 +8,9 @@ WindowManager::WindowManager()
 		Logger::Info("Window initialized");
 	else
 		Logger::Error("Window didn't create");
-	/*glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
 WindowManager::~WindowManager()
@@ -27,9 +25,20 @@ void WindowManager::OnAttach()
 	glfwMakeContextCurrent(this->GetWindow());
 	glfwSwapInterval(1);
 
-	Logger::Info("Version : %s", glGetString(GL_VERSION));
+#ifdef DEBUG_BUILD
+	Logger::Info("DEBUG BUILD");
+#elif RELEASE_BUILD
+	Logger::Info("RELEASE BUILD");
+#endif
+
 	Logger::Info("Manufacturer : %s", glGetString(GL_RENDERER));
 	Logger::Info("Vendor : %s", glGetString(GL_VENDOR));
+	Logger::Info("Version : %s", glGetString(GL_VERSION));
+	Logger::Info("GLSL Version : %s\n", glGetString(0x8B8C));
+
+	glEnable(GL_DEPTH_TEST);
+	glFrontFace(GL_CCW);
+	glEnable(GL_CULL_FACE);
 }
 
 void WindowManager::OnDetach()

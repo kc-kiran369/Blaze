@@ -1,6 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include<sstream>
 #include"ENTT/entt.hpp"
 #include"Benchmark/Logger.h"
 #include"ECS/Component/Components.h"

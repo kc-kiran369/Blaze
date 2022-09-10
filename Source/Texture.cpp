@@ -26,8 +26,8 @@ Texture::Texture(const char* path, unsigned int slot)
 	if (slot != NULL)
 		glBindTexture(GL_TEXTURE_2D, 0);
 	else
-		//std::cout << "Slot is Null" << std::endl;
 		Logger::Warn("Slot is Null");
+
 }
 
 Texture::~Texture()

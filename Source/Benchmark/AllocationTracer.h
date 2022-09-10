@@ -6,7 +6,9 @@
 
 void* operator new(size_t size)
 {
-	Logger::Error("Allocating : %d bytes", size);
+	Logger::Warn("Allocating : %d bytes", size);
+	//if (size > 64)
+		//__debugbreak();
 	return malloc(size);
 }
 #endif

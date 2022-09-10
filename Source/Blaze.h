@@ -23,4 +23,9 @@
 //#include"UI/CoreUI.h"
 //
 //#include"Windows/FileDialog.h"
-//#include"Windows/Prompt.h"
+//#include"Windows/Prompt.
+
+namespace Blaze
+{
+	
+}
