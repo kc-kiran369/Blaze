@@ -18,6 +18,7 @@ public:
 
 	unsigned int GetUniformLocation(const char* name);
 
+	void SetVec3(const char* name, float v1, float v2, float v3);
 	void SetVec4(const char* name, float v1, float v2, float v3, float v4);
 	void SetFloat(const char* name, float v);
 };

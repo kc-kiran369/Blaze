@@ -24,6 +24,7 @@ public:
 	GLFWwindow* GetWindow();
 
 	void SetIcon(GLFWwindow* window);
+	void ToggleSystemConsole();
 
 private:
 	GLFWwindow* window;

@@ -1,4 +1,9 @@
-﻿#define STB_IMAGE_IMPLEMENTATION
+﻿#pragma warning (diasble: 26451)
+#pragma warning (diasble: 4715)
+
+#define STB_IMAGE_IMPLEMENTATION
+
+#include"Benchmark/AllocationTracer.h"
 
 #include"iostream"
 #include<thread>
@@ -26,8 +31,6 @@
 
 #include"Blaze.h"
 
-#include"Benchmark/AllocationTracer.h"
-
 int main(int args, char** argv)
 {
 	Logger::Info(argv[0]);
@@ -46,7 +49,6 @@ int main(int args, char** argv)
 	Camera mainCamera(1000, 1000, glm::vec3{ 5.0f, 5.0f, -15.0f });
 
 	Shader standardShader("Shader\\standard.vert", "Shader\\standard.frag");
-	//Shader brightShader("Shader\\standard.vert", "Shader\\Light.frag");
 	Texture texture("Resources\\Images\\MedievalhouseDiffuse.jpg", 0);
 
 	glm::mat4 _model = glm::mat4(1.0f);
@@ -56,7 +58,6 @@ int main(int args, char** argv)
 
 	FrameBuffer framerBuffer;
 
-	char name[15] = { 0 };
 	float lastRenderTime = 0.0f;
 
 	while (!glfwWindowShouldClose(winManager.GetWindow()))
@@ -68,9 +69,9 @@ int main(int args, char** argv)
 		ui.OnGuiUpdate(winManager);
 
 		ImGui::Begin("Camera Debug");
-		ImGui::Text("Position X : %f Y : %f Z : %f", mainCamera.Position.x, mainCamera.Position.y, mainCamera.Position.z);
-		ImGui::Text("Orientation X : %f Y : %f Z : %f", mainCamera.Orientation.x, mainCamera.Orientation.y, mainCamera.Orientation.z);
-		ImGui::Text("Up X : %f Y : %f Z : %f", mainCamera.Up.x, mainCamera.Up.y, mainCamera.Up.z);
+		ImGui::Text("Position X : %.2f Y : %.2f Z : %.2f", mainCamera.Position.x, mainCamera.Position.y, mainCamera.Position.z);
+		ImGui::Text("Orientation X : %.2f Y : %.2f Z : %.2f", mainCamera.Orientation.x, mainCamera.Orientation.y, mainCamera.Orientation.z);
+		ImGui::Text("Up X : %.2f Y : %.2f Z : %.2f", mainCamera.Up.x, mainCamera.Up.y, mainCamera.Up.z);
 		ImGui::End();
 
 		ImGui::Begin("Lightning");
@@ -102,6 +103,7 @@ int main(int args, char** argv)
 				activeEnt->m_Entity = entity;
 			}
 		}
+		//ImGui::ShowStyleEditor(NULL);
 
 		if (ImGui::BeginPopupContextWindow(0, ImGuiMouseButton_Right, false))
 		{
@@ -127,71 +129,48 @@ int main(int args, char** argv)
 			ImGui::Text("Entity Name : %s", activeEnt->GetComponent<Tag>().tag.c_str());
 		}
 		ImGui::End();
-
-		ImGui::Begin("view view");
-		for (auto ent : view)
-		{
-			ImGui::Text("%s", view.get<Tag>(ent).tag);
-		}
-		ImGui::End();
-
 		ImGui::Begin("Property");
 		if (activeEnt)
 		{
 			ImGui::Text(activeEnt->GetComponent<Tag>().tag.c_str());
-
-			/*if (ImGui::InputText("Rename", name, sizeof(name)))
-			{
-				if (name[0] != '\0' || name[0] != 0)
-				{
-					activeEnt->GetComponent<Tag>().tag = name;
-				}
-				else
-				{
-					Logger::Warn("Name is empty");
-				}
-			}*/
+			ImGui::Separator();
 
 			if (!activeEnt->HasComponent<Transform>())
 				ImGui::Text("No Transform Component");
 			else
 			{
-				ImGui::BeginGroup();
-				ImGui::Columns(2, 0, false);
 				ImGui::Text("Transform");
-				ImGui::NextColumn();
-				if (ImGui::Button("_X_"))
+				ImGui::Separator();
+				if (DrawVec3Control("Translation", activeEnt->GetComponent<Transform>().transform, 0.0f, 100.0f))
 				{
-
+					standardShader.SetFloat("facX", activeEnt->GetComponent<Transform>().transform.x);
+					standardShader.SetFloat("facY", activeEnt->GetComponent<Transform>().transform.y);
+					standardShader.SetFloat("facZ", activeEnt->GetComponent<Transform>().transform.z);
 				}
-				ImGui::Columns(1);
-
-				glm::vec3 temp = glm::vec3(0);
-				if (ImGui::SliderFloat("x", &temp.x, -10.0f, 10.0f, "%.3f", 1.0f))
-				{
-					activeEnt->GetComponent<Transform>().transform = temp;
-					_model = glm::translate(_model, temp);
-				}
-				if (ImGui::SliderFloat("y", &temp.y, -100.0f, 100.0f, "%.3f", 1.0f))
-					activeEnt->GetComponent<Transform>().transform += temp;
-				if (ImGui::SliderFloat("z", &temp.z, -100.0f, 100.0f, "%.3f", 1.0f))
-					activeEnt->GetComponent<Transform>().transform += temp;
-				ImGui::EndGroup();
+				DrawVec3Control("Rotation", activeEnt->GetComponent<Transform>().rotation, 0.0f, 100.0f);
+				DrawVec3Control("Scale", activeEnt->GetComponent<Transform>().scale, 0.0f, 100.0f);
+				ImGui::Separator();
 			}
 
 			if (!activeEnt->HasComponent<Renderer>())
+			{
 				ImGui::Text("No Renderer Component");
+			}
 			else
 			{
 				ImGui::Text("Renderer");
+				ImGui::Separator();
 				if (activeEnt->GetComponent<Renderer>().hasModel)
 					ImGui::Text("It already has model");
 				else
+				{
 					if (ImGui::Button("Select Mesh"))
 					{
 						activeEnt->GetComponent<Renderer>().model.loadModel(FileDialog::OpenFile("*.fbx\0", winManager.GetWindow()));
 						activeEnt->GetComponent<Renderer>().hasModel = true;
 					}
+				}
+				ImGui::Separator();
 			}
 		}
 		ImGui::End();
@@ -205,17 +184,10 @@ int main(int args, char** argv)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
 		texture.Bind();
-		//for (auto entity : mainScene.entities)
-		//{
-		//	//Timer timer;
-		//	entity->GetComponent<Renderer>().model.Draw(standardShader);
-		//	//lastRenderTime = timer.Stop();
-		//}
 		for (auto ent : Rview)
 		{
 			Rview.get<Renderer>(ent).model.Draw(standardShader);
 		}
-		//model.Draw(standardShader);
 		framerBuffer.UnBind();
 
 		ui.End();

@@ -22,6 +22,8 @@ struct Transform
 	Vec3 rotation;
 	Vec3 scale;*/
 	glm::vec3 transform;
+	glm::vec3 rotation;
+	glm::vec3 scale;
 };
 
 struct Renderer

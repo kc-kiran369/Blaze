@@ -78,3 +78,8 @@ void WindowManager::SetIcon(GLFWwindow* window)
 	glfwSetWindowIcon(window, 1, &images);
 	stbi_image_free(images.pixels);
 }
+
+void WindowManager::ToggleSystemConsole()
+{
+	ShowWindow(GetConsoleWindow(), (IsWindowVisible(GetConsoleWindow()) ? SW_HIDE : SW_SHOW));
+}
