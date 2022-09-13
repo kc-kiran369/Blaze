@@ -3,24 +3,14 @@
 
 #include"../Source/Renderer/model.h"
 #include"glm/glm.hpp"
-//#include"glm/ext/matrix_transform.hpp"
 
 struct Tag
 {
 	std::string tag = "Untitled";
 };
 
-
-//struct Vec3
-//{
-//	float X, Y, Z;
-//};
-
 struct Transform
 {
-	/*Vec3 transform;
-	Vec3 rotation;
-	Vec3 scale;*/
 	glm::vec3 transform;
 	glm::vec3 rotation;
 	glm::vec3 scale;
@@ -32,9 +22,20 @@ struct Renderer
 	bool hasModel = false;
 };
 
+struct Light
+{
+	float intensity;
+	glm::vec4 color;
+	Transform transform;
+};
+
+struct PointLight : Light
+{
+
+};
+
 struct RigidBody;
 struct SpiritRenderer;
-struct Light;
 struct Camera;
 
 #endif

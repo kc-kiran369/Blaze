@@ -5,8 +5,6 @@
 #include"ImGUI/imgui_impl_glfw.h"
 #include"ImGUI/imgui_impl_opengl3.h"
 
-#include"Panel.h"
-
 class CoreUI
 {
 public:
@@ -18,8 +16,6 @@ public:
 
 	void Begin();
 	void End();
-
-	void OnGuiUpdate(WindowManager& windowManager);
 
 	void SetDarkThemeColors();
 };

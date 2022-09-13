@@ -6,6 +6,9 @@
 #include"Benchmark/Logger.h"
 #include"ECS/Component/Components.h"
 
+#include<string_view>
+#include<sstream>
+
 class Entity;
 
 class Scene

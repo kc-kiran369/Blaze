@@ -1,5 +1,3 @@
-#pragma warning (disable: 26812)
-
 #include"Renderer/model.h"
 
 Model::Model()

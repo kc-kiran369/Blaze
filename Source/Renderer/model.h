@@ -23,7 +23,6 @@
 
 #include"Benchmark/Logger.h"
 
-
 class Model
 {
 public:
@@ -32,8 +31,8 @@ public:
 	void loadModel(std::string path);
 	void Draw(Shader& shader);
 
-private:
 	std::vector<Mesh> meshes;
+private:
 	//std::string directory;
 	bool m_Loaded = false;
 

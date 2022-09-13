@@ -19,9 +19,10 @@ Entity* Scene::CreateEntity()
 {
 	Entity* entity = new Entity(m_Registry.create(), this);
 
-	std::string name = ("Entity" + std::to_string((int)entity->m_Entity));
+	std::stringstream name;
+	name << "Entity" << ((int)entity->m_Entity) + 1;
 
-	entity->AddComponent<Tag>(name);
+	entity->AddComponent<Tag>(name.str());
 	entity->AddComponent<Transform>();
 	entity->AddComponent<Renderer>().model;
 	entities.push_back(entity);

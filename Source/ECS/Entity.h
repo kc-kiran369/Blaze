@@ -58,9 +58,9 @@ inline T& Entity::GetComponent()
 template<typename T>
 inline bool Entity::HasComponent()
 {
-		if (m_Scene->m_Registry.all_of<T>(m_Entity))
-			return true;
-		else
-			return false;
+	if (m_Scene->m_Registry.all_of<T>(m_Entity))
+		return true;
+	else
+		return false;
 }
 #endif

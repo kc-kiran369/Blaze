@@ -23,6 +23,5 @@ void main()
 {
 	vec3 lightDir = normalize(lightPos - _position);
 	float angle = max(dot(lightDir,normalize(_normal)),0.0f);
-//	gl_FragColor = texture(_texture,_texCoord);
-	gl_FragColor = texture(_texture,_texCoord) * (angle + vec4(0.7f));
+	gl_FragColor = (_ambientColor +angle)* texture(_texture,_texCoord) ;
 }
