@@ -6,7 +6,7 @@ Camera::Camera(int _width, int _height, glm::vec3 _position)
 
 }
 
-void Camera::UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane, glm::mat4& model, Shader& shader)
+void Camera::UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane, Shader& shader)
 {
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
@@ -14,7 +14,7 @@ void Camera::UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane, glm:
 	view = glm::lookAt(Position, Position + Orientation, Up);
 	projection = glm::perspective(glm::radians(-_FOVdeg), (float)width / height, _nearPlane, _farPlane);
 
-	MVP = projection * view * model;
+	MVP = projection * view;
 
 	glUniformMatrix4fv(shader.GetUniformLocation("MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
 }

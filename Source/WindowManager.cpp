@@ -3,7 +3,7 @@
 WindowManager::WindowManager()
 {
 	glfwInit();
-	window = glfwCreateWindow(1000, 1000, "Blaze", nullptr, nullptr);
+	window = glfwCreateWindow(width, height, "Blaze", nullptr, nullptr);
 	if (window)
 		Logger::Info("Window initialized");
 	else

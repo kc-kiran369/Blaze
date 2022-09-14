@@ -17,7 +17,7 @@ class Camera
 {
 public:
 	//glm::vec3 Position;
-	glm::vec3 Position= glm::vec3(8.5f,15.5f,-20.0f);
+	glm::vec3 Position = glm::vec3(8.5f, 15.5f, -20.0f);
 	glm::vec3 Orientation = glm::vec3(0.0f, 0.0f, 1.0f);
 	glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::mat4 cameraMatrix = glm::mat4(1.0f);
@@ -32,7 +32,7 @@ public:
 
 	Camera(int _width, int _height, glm::vec3 _position);
 
-	void UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane, glm::mat4& model, Shader& shader);
+	void UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane, Shader& shader);
 	void Input(GLFWwindow* window);
 	void OnResize();	//Not Implemented
 };

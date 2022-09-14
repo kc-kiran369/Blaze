@@ -26,6 +26,7 @@ public:
 	void SetIcon(GLFWwindow* window);
 	void ToggleSystemConsole();
 
+	uint32_t width = 1280, height = 720;
 private:
 	GLFWwindow* window;
 	float currTime = 0.0f, preTime = 0.0f, timeDiff = 0.0f;

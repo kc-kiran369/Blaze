@@ -7,6 +7,11 @@
 #include"../Benchmark/Logger.h"
 #include"../ECS/Scene.h"
 
+enum EntityType
+{
+	EMPTY_ENTITY, MODEL, LIGHT
+};
+
 class Entity
 {
 private:

@@ -14,7 +14,6 @@ public:
 
 	void Activate();
 	void DeActivate();
-	void Delete();
 
 	unsigned int GetUniformLocation(const char* name);
 

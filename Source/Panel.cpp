@@ -6,6 +6,7 @@ namespace Blaze
 	{
 		Entity* activeEntity = nullptr;
 
+
 		bool DrawVec3Control(const char* label, glm::vec3& values, float resetValue, float columnWidth)
 		{
 			bool valueChanged = false;
@@ -162,7 +163,11 @@ namespace Blaze
 				if (ImGui::MenuItem("Cylinder")) {}
 				if (ImGui::MenuItem("Sphere")) {}
 				if (ImGui::MenuItem("Cone")) {}
-				if (ImGui::MenuItem("Import..")) {}
+				if (ImGui::MenuItem("Light"))
+				{
+					Entity* temp = scene.CreateEntity();
+					temp->AddComponent<Light>();
+				}
 				ImGui::EndPopup();
 			}
 
@@ -212,9 +217,10 @@ namespace Blaze
 					{
 						if (Blaze::UI::DrawVec3Control("Translation", activeEntity->GetComponent<Transform>().transform, 0.0f, 100.0f))
 						{
-							shader.SetFloat("facX", activeEntity->GetComponent<Transform>().transform.x);
+							activeEntity->GetComponent<Transform>().OnTransformChange(shader);
+							/*shader.SetFloat("facX", activeEntity->GetComponent<Transform>().transform.x);
 							shader.SetFloat("facY", activeEntity->GetComponent<Transform>().transform.y);
-							shader.SetFloat("facZ", activeEntity->GetComponent<Transform>().transform.z);
+							shader.SetFloat("facZ", activeEntity->GetComponent<Transform>().transform.z);*/
 						}
 						Blaze::UI::DrawVec3Control("Rotation", activeEntity->GetComponent<Transform>().rotation, 0.0f, 100.0f);
 						Blaze::UI::DrawVec3Control("Scale", activeEntity->GetComponent<Transform>().scale, 0.0f, 100.0f);
@@ -245,7 +251,20 @@ namespace Blaze
 							ImGui::Separator();
 						}
 					}
+
+
 					ImGui::TreePop();
+				}
+
+				if (activeEntity->HasComponent<Light>())
+				{
+					if (ImGui::TreeNodeEx("Light", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_Selected))
+					{
+						ImGui::SliderFloat("Intensity", &activeEntity->GetComponent<Light>().intensity, 0.0f, 50.0f, "%.2f", 1.0f);
+						ImGui::ColorEdit3("Color", &activeEntity->GetComponent<Light>().color.x);
+						ImGui::Separator();
+						ImGui::TreePop();
+					}
 				}
 			}
 			ImGui::End();

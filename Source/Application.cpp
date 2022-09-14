@@ -27,17 +27,14 @@
 
 #include"Blaze.h"
 
-#include"imgizmo/ImGuizmo.h"
-#include"im3d/im3d.h"
-
 int main(int args, char** argv)
 {
 	#pragma region Setup
 	WindowManager winManager;
 	winManager.OnAttach();
 
-	CoreUI ui;
-	ui.OnAttach(winManager.GetWindow());
+	CoreUI ui_interface;
+	ui_interface.OnAttach(winManager.GetWindow());
 	glewInit();
 	#pragma endregion 
 
@@ -45,13 +42,12 @@ int main(int args, char** argv)
 	Scene mainScene;
 	entt::entity selectedEntity = entt::entity(0);
 
-	Camera mainCamera(1000, 1000, glm::vec3{ 5.0f, 5.0f, -15.0f });
+	Camera mainCamera(winManager.width, winManager.height, glm::vec3{ 5.0f, 5.0f, -15.0f });
 
 	Shader standardShader("Shader\\standard.vert", "Shader\\standard.frag");
 	Texture texture("Resources\\Images\\MedievalhouseDiffuse.jpg", 0);
 
-	glm::mat4 _model = glm::mat4(1.0f);
-	_model = glm::rotate(_model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+	//_model = glm::rotate(_model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
 
 	float ambientColor[] = { 0.4f,0.4f,0.4f,1.0f };
 
@@ -60,9 +56,9 @@ int main(int args, char** argv)
 
 	while (!glfwWindowShouldClose(winManager.GetWindow()))
 	{
-		mainCamera.UpdateMatrix(45.0f, 0.1f, 1000.0f, _model, standardShader);
+		mainCamera.UpdateMatrix(45.0f, 0.1f, 1000.0f, standardShader);
 		winManager.OnUpdate();
-		ui.Begin();
+		ui_interface.Begin();
 
 		Blaze::UI::MainMenuBar(winManager);
 
@@ -76,7 +72,7 @@ int main(int args, char** argv)
 
 		Blaze::UI::ProfilerPanel(winManager);
 
-		#pragma region Rendering
+	#pragma region Rendering
 		frameBuffer.Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
@@ -86,15 +82,15 @@ int main(int args, char** argv)
 				mainScene.m_Registry.get<Renderer>(entity).model.Draw(standardShader);
 			});
 		frameBuffer.UnBind();
-		#pragma endregion 
+#pragma endregion 
 
-		ui.End();
+		ui_interface.End();
 		mainCamera.Input(winManager.GetWindow());
 		winManager.OnUpdateComplete();
 	}
 	#pragma region CleanUp
-	ui.OnDetach();
+	ui_interface.OnDetach();
 	winManager.OnDetach();
 	return EXIT_SUCCESS;
-	#pragma endregion
+#pragma endregion
 }
