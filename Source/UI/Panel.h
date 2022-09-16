@@ -18,6 +18,8 @@
 
 #include"../Windows/FileDialog.h"
 
+#include"../Renderer/ShaderLibrary.h"
+
 namespace Blaze
 {
 	namespace UI
@@ -25,11 +27,12 @@ namespace Blaze
 		bool DrawVec3Control(const char* label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f);
 
 		void MainMenuBar(WindowManager& window);
-		void ViewportPanel(FrameBuffer& frameBuffer);
-		void HierarchyPanel(Scene& scene, entt::entity& selectedEntity);
-		void PropertyPanel(Scene& scene, entt::entity& selectedEntity, Shader& shader, GLFWwindow* window);
+		void ViewportPanel(FrameBuffer& frameBuffer, WindowManager& winManager);
+		void HierarchyPanel(Scene& scene);
+		void PropertyPanel(Scene& scene, Shader& shader, GLFWwindow* window);
 		void ProfilerPanel(WindowManager& winManager);
 		void LightingPanel(Shader& shader, float ambientColor[4]);
+		void ShaderLibPanel(ShaderLibrary& lib);
 	}
 }
 #endif                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   

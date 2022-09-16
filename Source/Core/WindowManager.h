@@ -20,6 +20,7 @@ public:
 	void OnUpdateComplete();
 
 	float deltaTime();
+	float LastFrameTime();
 
 	GLFWwindow* GetWindow();
 

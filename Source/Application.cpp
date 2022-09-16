@@ -27,59 +27,62 @@
 
 #include"Blaze.h"
 
+#include"Renderer/ShaderLibrary.h"
+
 int main(int args, char** argv)
 {
-	#pragma region Setup
+#pragma region Setup
 	WindowManager winManager;
 	winManager.OnAttach();
 
 	CoreUI ui_interface;
 	ui_interface.OnAttach(winManager.GetWindow());
 	glewInit();
-	#pragma endregion 
+#pragma endregion 
 
-	#pragma region Initilization
+#pragma region Initilization
 	Scene mainScene;
-	entt::entity selectedEntity = entt::entity(0);
 
 	Camera mainCamera(winManager.width, winManager.height, glm::vec3{ 5.0f, 5.0f, -15.0f });
 
-	Shader standardShader("Shader\\standard.vert", "Shader\\standard.frag");
-	Texture texture("Resources\\Images\\MedievalhouseDiffuse.jpg", 0);
+	ShaderLibrary shaderLibrary;
+	shaderLibrary.AddShader("StandardShader", "Shader\\standard.vert", "Shader\\standard.frag");
 
-	//_model = glm::rotate(_model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+	Texture texture("Resources\\Images\\MedievalhouseDiffuse.jpg", 0);
 
 	float ambientColor[] = { 0.4f,0.4f,0.4f,1.0f };
 
 	FrameBuffer frameBuffer;
-	#pragma endregion
+#pragma endregion
 
 	while (!glfwWindowShouldClose(winManager.GetWindow()))
 	{
-		mainCamera.UpdateMatrix(45.0f, 0.1f, 1000.0f, standardShader);
+		mainCamera.UpdateMatrix(45.0f, 0.1f, 1000.0f, shaderLibrary.GetShader("StandardShader"));
 		winManager.OnUpdate();
 		ui_interface.Begin();
 
 		Blaze::UI::MainMenuBar(winManager);
 
-		Blaze::UI::LightingPanel(standardShader, ambientColor);
+		Blaze::UI::LightingPanel(shaderLibrary.GetShader("StandardShader"), ambientColor);
 
-		Blaze::UI::ViewportPanel(frameBuffer);
+		Blaze::UI::ViewportPanel(frameBuffer, winManager);
 
-		Blaze::UI::HierarchyPanel(mainScene, selectedEntity);
+		Blaze::UI::HierarchyPanel(mainScene);
 
-		Blaze::UI::PropertyPanel(mainScene, selectedEntity, standardShader, winManager.GetWindow());
+		Blaze::UI::PropertyPanel(mainScene, shaderLibrary.GetShader("StandardShader"), winManager.GetWindow());
 
 		Blaze::UI::ProfilerPanel(winManager);
 
-	#pragma region Rendering
+		Blaze::UI::ShaderLibPanel(shaderLibrary);
+
+#pragma region Rendering
 		frameBuffer.Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
 		texture.Bind();
 		mainScene.m_Registry.each([&](entt::entity entity)
 			{
-				mainScene.m_Registry.get<Renderer>(entity).model.Draw(standardShader);
+				mainScene.m_Registry.get<Renderer>(entity).model.Draw(shaderLibrary.GetShader("StandardShader"));
 			});
 		frameBuffer.UnBind();
 #pragma endregion 
@@ -88,7 +91,7 @@ int main(int args, char** argv)
 		mainCamera.Input(winManager.GetWindow());
 		winManager.OnUpdateComplete();
 	}
-	#pragma region CleanUp
+#pragma region CleanUp
 	ui_interface.OnDetach();
 	winManager.OnDetach();
 	return EXIT_SUCCESS;

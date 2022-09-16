@@ -30,8 +30,10 @@ public:
 	float speed = 0.05f;
 	float sensitivity = 30.0f;
 
+	Camera() = default;
 	Camera(int _width, int _height, glm::vec3 _position);
 
+	void Setup(int _width, int _height, glm::vec3 _position);
 	void UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane, Shader& shader);
 	void Input(GLFWwindow* window);
 	void OnResize();	//Not Implemented

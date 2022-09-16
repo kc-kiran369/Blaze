@@ -35,6 +35,35 @@ Texture::~Texture()
 	glDeleteTextures(1, &m_RendererID);
 }
 
+void Texture::Load(const char* path, uint32_t slot)
+{
+	glGenTextures(1, &m_RendererID);
+	glBindTexture(GL_TEXTURE_2D, m_RendererID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	int width, height, channel;
+	stbi_set_flip_vertically_on_load(false);
+	unsigned char* data = stbi_load(path, &width, &height, &channel, 0);
+	m_Width = width;
+	m_Height = height;
+	m_Channel = channel;
+	glTexImage2D(GL_TEXTURE_2D, 0, (channel == 3 ? GL_RGB : GL_RGBA), width, height, 0, (channel == 3 ? GL_RGB : GL_RGBA), GL_UNSIGNED_BYTE, data);
+	glActiveTexture(GL_TEXTURE0 + slot);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	if (data)
+		stbi_image_free(data);
+	else
+		Logger::Warn("Image didn't load");
+
+	if (slot != NULL)
+		glBindTexture(GL_TEXTURE_2D, 0);
+	else
+		Logger::Warn("Slot is Null");
+}
+
 void Texture::Bind()
 {
 	glBindTexture(GL_TEXTURE_2D, m_RendererID);

@@ -8,8 +8,8 @@ WindowManager::WindowManager()
 		Logger::Info("Window initialized");
 	else
 		Logger::Error("Window didn't create");
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
@@ -64,6 +64,11 @@ void WindowManager::OnUpdateComplete()
 float WindowManager::deltaTime()
 {
 	return (1 / timeDiff);
+}
+
+float WindowManager::LastFrameTime()
+{
+	return  timeDiff;
 }
 
 GLFWwindow* WindowManager::GetWindow()

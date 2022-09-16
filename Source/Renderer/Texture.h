@@ -3,6 +3,7 @@
 
 #include"glew/glew.h"
 
+
 #ifndef STBI_INCLUDE_STB_IMAGE_H
 #include"stb_image/stb_image.h"
 #endif
@@ -16,9 +17,11 @@ class Texture
 	unsigned int m_RendererID;
 	unsigned int m_Width, m_Height, m_Channel;
 public:
+	Texture() = default;
 	Texture(const char* path, unsigned int slot);
 	~Texture();
 
+	void Load(const char* path, uint32_t slot);
 	void Bind();
 	void UnBind();
 	unsigned int GetRendererID();

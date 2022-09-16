@@ -5,7 +5,12 @@ namespace Blaze
 	namespace UI
 	{
 		Entity* activeEntity = nullptr;
+		entt::entity SelectedEntity = entt::entity(0);
 
+		float max(int v1, int v2)
+		{
+			return (v1 > v2 ? v1 : v2);
+		}
 
 		bool DrawVec3Control(const char* label, glm::vec3& values, float resetValue, float columnWidth)
 		{
@@ -140,17 +145,22 @@ namespace Blaze
 		}
 
 
-		void ViewportPanel(FrameBuffer& frameBuffer)
+		void ViewportPanel(FrameBuffer& frameBuffer, WindowManager& winManager)
 		{
-			ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_NoResize);
-			ImGui::Image((ImTextureID)frameBuffer.GetColorTexture(), ImVec2{ 1000,1000 });
+			ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_MenuBar);
+			ImGui::BeginMenuBar();
+			ImGui::Text("FPS : %f", winManager.deltaTime());
+			ImGui::EndMenuBar();
+			ImGui::Image((ImTextureID)frameBuffer.GetColorTexture(), ImVec2{ 1280,max(720,ImGui::GetWindowWidth()) });
+			//ImGui::Image((ImTextureID)frameBuffer.GetColorTexture(), ImVec2{ 1280,720 });
 			ImGui::End();
 		}
 
 
-		void HierarchyPanel(Scene& scene, entt::entity& selectedEntity)
+		void HierarchyPanel(Scene& scene)
 		{
 			ImGui::Begin("Hierarchy");
+
 			ImGui::Text("Total entities : %d", scene.m_Registry.size());
 
 			if (ImGui::BeginPopupContextWindow(0, ImGuiMouseButton_Right, false))
@@ -175,9 +185,9 @@ namespace Blaze
 			{
 				scene.m_Registry.each([&](entt::entity entity)
 					{
-						if (ImGui::MenuItem(scene.m_Registry.get<Tag>(entity).tag.c_str(), (const char*)0, selectedEntity == entity, true))
+						if (ImGui::MenuItem(scene.m_Registry.get<Tag>(entity).tag.c_str(), (const char*)0, SelectedEntity == entity, true))
 						{
-							selectedEntity = entity;
+							SelectedEntity = entity;
 						}
 					});
 				ImGui::TreePop();
@@ -189,16 +199,17 @@ namespace Blaze
 		void ProfilerPanel(WindowManager& winManager)
 		{
 			ImGui::Begin("Profiler");
-			ImGui::Text("FPS : %f", winManager.deltaTime());
+			/*ImGui::Text("FPS : %f", winManager.deltaTime());
+			ImGui::Text("Last Frame : %f", winManager.LastFrameTime());*/
 			ImGui::End();
 		}
 
 
-		void PropertyPanel(Scene& scene, entt::entity& selectedEntity, Shader& shader, GLFWwindow* window)
+		void PropertyPanel(Scene& scene, Shader& shader, GLFWwindow* window)
 		{
 			for (auto entity : scene.entities)
 			{
-				if (entity->m_Entity == selectedEntity)
+				if (entity->m_Entity == SelectedEntity)
 				{
 					activeEntity = entity;
 				}
@@ -218,12 +229,12 @@ namespace Blaze
 						if (Blaze::UI::DrawVec3Control("Translation", activeEntity->GetComponent<Transform>().transform, 0.0f, 100.0f))
 						{
 							activeEntity->GetComponent<Transform>().OnTransformChange(shader);
-							/*shader.SetFloat("facX", activeEntity->GetComponent<Transform>().transform.x);
-							shader.SetFloat("facY", activeEntity->GetComponent<Transform>().transform.y);
-							shader.SetFloat("facZ", activeEntity->GetComponent<Transform>().transform.z);*/
 						}
+
 						Blaze::UI::DrawVec3Control("Rotation", activeEntity->GetComponent<Transform>().rotation, 0.0f, 100.0f);
+
 						Blaze::UI::DrawVec3Control("Scale", activeEntity->GetComponent<Transform>().scale, 0.0f, 100.0f);
+
 						ImGui::Separator();
 					}
 					ImGui::TreePop();
@@ -250,9 +261,10 @@ namespace Blaze
 							}
 							ImGui::Separator();
 						}
+						/*ImGui::Text((activeEntity->GetComponent<Renderer>().material.m_MatType ? "Standard" : "Unknown"));
+						ImGui::SliderFloat("Metallic", &activeEntity->GetComponent<Renderer>().material.m_Metallic, 0.0f, 1.0f, "%.2f", 1.0f);
+						ImGui::SliderFloat("Smoothness", &activeEntity->GetComponent<Renderer>().material.m_Smoothness, 0.0f, 1.0f, "%.2f", 1.0f);*/
 					}
-
-
 					ImGui::TreePop();
 				}
 
@@ -267,6 +279,14 @@ namespace Blaze
 					}
 				}
 			}
+			ImGui::End();
+		}
+
+
+		void ShaderLibPanel(ShaderLibrary& lib)
+		{
+			ImGui::Begin("Shader Library");
+			ImGui::Text("%d", lib.GetCount());
 			ImGui::End();
 		}
 	}
