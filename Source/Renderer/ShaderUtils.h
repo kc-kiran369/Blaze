@@ -7,9 +7,9 @@
 #include<sstream>
 #include"Benchmark/Logger.h"
 
-unsigned int CompileShader(unsigned int type, std::string& src);
+uint32_t CompileShader(uint32_t type, std::string& src);
 
-unsigned int CreateShader(std::string& vertexSrc, std::string& fragmentSrc);
+uint32_t CreateShader(std::string& vertexSrc, std::string& fragmentSrc);
 
 std::string ShaderReader(const char* path);
 #endif

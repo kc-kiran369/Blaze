@@ -13,7 +13,7 @@
 class Shader
 {
 public:
-	unsigned int ID;
+	uint32_t ID;
 	Shader() = default;
 	Shader(const char* vert_path, const char* frag_path);
 
@@ -22,7 +22,7 @@ public:
 	void Activate();
 	void DeActivate();
 
-	unsigned int GetUniformLocation(const char* name);
+	uint32_t GetUniformLocation(const char* name);
 
 	void SetVec3(const char* name, float v1, float v2, float v3);
 	void SetVec4(const char* name, float v1, float v2, float v3, float v4);

@@ -14,19 +14,19 @@
 
 class Texture
 {
-	unsigned int m_RendererID;
-	unsigned int m_Width, m_Height, m_Channel;
+	uint32_t m_RendererID = 0;
+	uint32_t m_Width = 0, m_Height = 0, m_Channel = 0;
 public:
 	Texture() = default;
-	Texture(const char* path, unsigned int slot);
+	Texture(const char* path, uint32_t slot);
 	~Texture();
 
 	void Load(const char* path, uint32_t slot);
 	void Bind();
 	void UnBind();
-	unsigned int GetRendererID();
-	unsigned int GetWidth();
-	unsigned int GetHeight();
-	unsigned int GetChannel();
+	uint32_t GetRendererID();
+	uint32_t GetWidth();
+	uint32_t GetHeight();
+	uint32_t GetChannel();
 };
 #endif

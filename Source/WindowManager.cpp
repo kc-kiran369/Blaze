@@ -3,8 +3,8 @@
 WindowManager::WindowManager()
 {
 	glfwInit();
-	window = glfwCreateWindow(width, height, "Blaze", nullptr, nullptr);
-	if (window)
+	m_Window = glfwCreateWindow(width, height, "Blaze", nullptr, nullptr);
+	if (m_Window)
 		Logger::Info("Window initialized");
 	else
 		Logger::Error("Window didn't create");
@@ -24,6 +24,7 @@ void WindowManager::OnAttach()
 	//glfwMaximizeWindow(this->GetWindow());
 	glfwMakeContextCurrent(this->GetWindow());
 	glfwSwapInterval(1);
+	glewInit();
 
 #ifdef DEBUG_BUILD
 	Logger::Info("DEBUG BUILD");
@@ -48,32 +49,30 @@ void WindowManager::OnDetach()
 
 void WindowManager::OnUpdate()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(32.0f / 255.0f, 32.0f / 255.0f, 32.0f / 255.0f, 1.0f);
-	currTime = glfwGetTime();
-	timeDiff = currTime - preTime;
+	m_CurrTime = glfwGetTime();
+	m_TimeDiff = m_CurrTime - m_PreTime;
 }
 
 void WindowManager::OnUpdateComplete()
 {
 	glfwPollEvents();
 	glfwSwapBuffers(this->GetWindow());
-	preTime = currTime;
+	m_PreTime = m_CurrTime;
 }
 
 float WindowManager::deltaTime()
 {
-	return (1 / timeDiff);
+	return (1 / m_TimeDiff);
 }
 
 float WindowManager::LastFrameTime()
 {
-	return  timeDiff;
+	return  m_TimeDiff;
 }
 
 GLFWwindow* WindowManager::GetWindow()
 {
-	return window;
+	return m_Window;
 }
 
 void WindowManager::SetIcon(GLFWwindow* window)

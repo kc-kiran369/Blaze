@@ -7,14 +7,14 @@
 class VertexArray
 {
 private:
-	unsigned int m_RendererID;
+	uint32_t m_RendererID;
 public:
 	VertexArray();
 
-	void LinkAttrib(VertexBuffer& vbo, unsigned int vertexSize, unsigned int layout, float stride, void* pointer);
+	void LinkAttrib(VertexBuffer& vbo, uint32_t vertexSize, uint32_t layout, float stride, void* pointer);
 	void Bind();
 	void UnBind();
-	unsigned int GetID();
+	uint32_t GetID();
 	void Delete();
 };
 #endif

@@ -20,6 +20,7 @@ public:
 	entt::entity m_Entity = entt::entity(0);
 
 	Entity(entt::entity entity, Scene* scene);
+	Entity(const Entity& other);
 	~Entity();
 
 	template<typename T, typename... Args>

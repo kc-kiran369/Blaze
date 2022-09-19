@@ -4,13 +4,13 @@
 #include"Texture.h"
 #include"Shader.h"
 
-enum MaterialType {
+enum class MaterialType {
 	STANDARD
 };
 
 class Material
 {
-	//Shader& m_Shader;
+	Shader& m_Shader;
 public:
 	Texture m_Albedo;
 	Texture m_NormalMap;

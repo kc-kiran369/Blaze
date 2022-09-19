@@ -1,13 +1,14 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 
+#include<iostream>
 #include"glew/glew.h"
 #include"Benchmark/Logger.h"
 
 class FrameBuffer
 {
 private:
-	unsigned int m_RendererID, colorAttachment, depthAttachment, renderBuffer;
+	uint32_t m_RendererID, colorAttachment, depthAttachment, renderBuffer;
 public:
 	FrameBuffer();
 	~FrameBuffer();
@@ -15,8 +16,8 @@ public:
 	void Bind();
 	void UnBind();
 
-	unsigned int GetRendererID();
-	unsigned int GetColorTexture();
-	unsigned int GetDepthTexture();
+	uint32_t GetRendererID();
+	uint32_t GetColorTexture();
+	uint32_t GetDepthTexture();
 };
 #endif

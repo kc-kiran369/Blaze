@@ -8,12 +8,10 @@ out vec3 _position;
 out vec3 _normal;
 out vec2 _texCoord;
 
-uniform mat4 VP;
-uniform mat4 model;
+uniform mat4 ViewProjection;
+uniform mat4 model = mat4(1.0f);
 
-uniform float facX;
-uniform float facY;
-uniform float facZ;
+uniform vec3 facTrans = vec3(0.0f);
 
 void main()
 {
@@ -21,5 +19,5 @@ void main()
 	_normal = normal;
 	_texCoord = texCoord;
 
-	gl_Position = ( VP )* vec4(position + vec3(facX, facY, facZ), 1.0f);	
+	gl_Position = ViewProjection * vec4(position + facTrans, 1.0f);	
 }

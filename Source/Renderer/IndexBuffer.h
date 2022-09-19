@@ -2,20 +2,21 @@
 #define INDEX_BUFFER_CLASS_H
 
 #include "glew/glew.h"
+#include<stdint.h>
 
 class IndexBuffer
 {
 private:
-	unsigned int m_RendererID;
-	unsigned int m_Count;
+	uint32_t m_RendererID;
+	uint32_t m_Count;
 public:
-	IndexBuffer(unsigned int size, void* data);
+	IndexBuffer(uint32_t size, void* data);
 	~IndexBuffer();
 
 	void Bind();
 	void UnBind();
 
-	unsigned int GetRendererID();
-	unsigned int GetCount();
+	uint32_t GetRendererID();
+	uint32_t GetCount();
 };
 #endif

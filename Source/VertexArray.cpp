@@ -6,7 +6,7 @@ VertexArray::VertexArray()
 	glBindVertexArray(m_RendererID);
 }
 
-void VertexArray::LinkAttrib(VertexBuffer& vbo,unsigned int vertexSize, unsigned int layout, float stride, void* pointer)
+void VertexArray::LinkAttrib(VertexBuffer& vbo,uint32_t vertexSize, uint32_t layout, float stride, void* pointer)
 {
 	vbo.Bind();
 	glVertexAttribPointer(layout, vertexSize, GL_FLOAT, GL_FALSE, stride, pointer);
@@ -24,7 +24,7 @@ void VertexArray::UnBind()
 	glBindVertexArray(0);
 }
 
-unsigned int VertexArray::GetID()
+uint32_t VertexArray::GetID()
 {
 	return m_RendererID;
 }

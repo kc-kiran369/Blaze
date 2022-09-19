@@ -8,7 +8,7 @@
 class CoreUI
 {
 public:
-	CoreUI();
+	CoreUI() = default;
 	~CoreUI() = default;
 
 	void OnAttach(GLFWwindow* window);
@@ -18,5 +18,9 @@ public:
 	void End();
 
 	void SetDarkThemeColors();
+private:
+	ImGuiIO* io;
+	ImGuiStyle* style;
+	ImVec4* colors;
 };
 #endif

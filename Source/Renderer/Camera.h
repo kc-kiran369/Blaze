@@ -16,26 +16,26 @@
 class Camera
 {
 public:
-	//glm::vec3 Position;
 	glm::vec3 Position = glm::vec3(8.5f, 15.5f, -20.0f);
+
 	glm::vec3 Orientation = glm::vec3(0.0f, 0.0f, 1.0f);
 	glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::mat4 cameraMatrix = glm::mat4(1.0f);
+
+	//glm::mat4 cameraMatrix = glm::mat4(1.0f);
 	glm::mat4 MVP = glm::mat4(1.0f);
 
 	bool firstClick = true;
 
-	int width, height;
+	int width = 0, height = 0;
 
 	float speed = 0.05f;
 	float sensitivity = 30.0f;
 
 	Camera() = default;
-	Camera(int _width, int _height, glm::vec3 _position);
+	Camera(int _width, int _height , glm::vec3 _position);
 
 	void Setup(int _width, int _height, glm::vec3 _position);
 	void UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane, Shader& shader);
 	void Input(GLFWwindow* window);
-	void OnResize();	//Not Implemented
 };
 #endif

@@ -20,6 +20,10 @@
 
 #include"../Renderer/ShaderLibrary.h"
 
+#include"../Math/Mathf.h"
+
+#define NO_ENTITY -1
+
 namespace Blaze
 {
 	namespace UI

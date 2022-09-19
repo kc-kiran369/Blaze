@@ -1,12 +1,11 @@
 #include"Renderer/Camera.h"
 
 Camera::Camera(int _width, int _height, glm::vec3 _position)
-	:width(_width), height(_height), Position(_position)
 {
-
+	Setup(_width, _height, _position);
 }
 
-void Camera::Setup(int _width, int _height, glm::vec3 _position)
+void Camera::Setup(int _width = 1280, int _height = 720, glm::vec3 _position = glm::vec3(0.0f))
 {
 	width = _width;
 	height = _height;
@@ -23,7 +22,7 @@ void Camera::UpdateMatrix(float _FOVdeg, float _nearPlane, float _farPlane, Shad
 
 	MVP = projection * view;
 
-	shader.SetMat4("VP", MVP);
+	shader.SetMat4("ViewProjection", MVP);
 }
 
 void Camera::Input(GLFWwindow* window)
@@ -91,15 +90,5 @@ void Camera::Input(GLFWwindow* window)
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		// Makes sure the next time the camera looks around it doesn't jump
 		firstClick = true;
-	}
-
-	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-	{
-		//Select any object
-	}
-
-	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
-	{
-		//popup edit menu
 	}
 }

@@ -2,6 +2,7 @@
 #define WINDOW_MANAGER_H
 
 #include<iostream>
+#include<glew/glew.h>
 #include<glfw/glfw3.h>
 #ifndef STB_IMAGE_IMPLEMENTATION
 #include"stb_image/stb_image.h"
@@ -29,7 +30,7 @@ public:
 
 	uint32_t width = 1280, height = 720;
 private:
-	GLFWwindow* window;
-	float currTime = 0.0f, preTime = 0.0f, timeDiff = 0.0f;
+	GLFWwindow* m_Window;
+	float m_CurrTime = 0.0f, m_PreTime = 0.0f, m_TimeDiff = 0.0f;
 };
 #endif

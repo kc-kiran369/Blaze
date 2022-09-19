@@ -28,11 +28,11 @@ struct Transform
 
 	void OnTransformChange(Shader& shader)
 	{
-		shader.SetFloat("facX", transform.x);
+		/*shader.SetFloat("facX", transform.x);
 		shader.SetFloat("facY", transform.y);
-		shader.SetFloat("facZ", transform.z);
+		shader.SetFloat("facZ", transform.z);*/
 
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		shader.SetVec3("facTrans", transform.x, transform.y, transform.z);
 
 		shader.SetMat4("model", modelMatrix);
 	}

@@ -14,45 +14,39 @@
 #include"Renderer/Shader.h"
 #include"Renderer/model.h"
 #include"Renderer/Texture.h"
+#include"Renderer/ShaderLibrary.h"
+#include"Renderer/Rendering.h"
 
 #include"Windows/FileDialog.h"
 #include"Windows/Prompt.h"
 
 #include"Benchmark/Timer.h"
-
 #include"Benchmark/Logger.h"
+
 #include"Core/WindowManager.h"
 #include"UI/CoreUI.h"
 #include"UI/Panel.h"
 
-#include"Blaze.h"
-
-#include"Renderer/ShaderLibrary.h"
-
 int main(int args, char** argv)
 {
 #pragma region Setup
-	WindowManager winManager;
+	WindowManager winManager; 
 	winManager.OnAttach();
-
-	CoreUI ui_interface;
+	CoreUI ui_interface; 
 	ui_interface.OnAttach(winManager.GetWindow());
-	glewInit();
 #pragma endregion 
 
 #pragma region Initilization
 	Scene mainScene;
-
 	Camera mainCamera(winManager.width, winManager.height, glm::vec3{ 5.0f, 5.0f, -15.0f });
-
 	ShaderLibrary shaderLibrary;
 	shaderLibrary.AddShader("StandardShader", "Shader\\standard.vert", "Shader\\standard.frag");
-
+	shaderLibrary.AddShader("LightShader", "Shader\\standard.vert", "Shader\\Light.frag");
+	Blaze::Rendering renderer;
 	Texture texture("Resources\\Images\\MedievalhouseDiffuse.jpg", 0);
-
 	float ambientColor[] = { 0.4f,0.4f,0.4f,1.0f };
-
 	FrameBuffer frameBuffer;
+	Material material(shaderLibrary.GetShader("StandardShader"));
 #pragma endregion
 
 	while (!glfwWindowShouldClose(winManager.GetWindow()))
@@ -62,30 +56,15 @@ int main(int args, char** argv)
 		ui_interface.Begin();
 
 		Blaze::UI::MainMenuBar(winManager);
-
 		Blaze::UI::LightingPanel(shaderLibrary.GetShader("StandardShader"), ambientColor);
-
 		Blaze::UI::ViewportPanel(frameBuffer, winManager);
-
 		Blaze::UI::HierarchyPanel(mainScene);
-
 		Blaze::UI::PropertyPanel(mainScene, shaderLibrary.GetShader("StandardShader"), winManager.GetWindow());
-
 		Blaze::UI::ProfilerPanel(winManager);
-
 		Blaze::UI::ShaderLibPanel(shaderLibrary);
 
-#pragma region Rendering
-		frameBuffer.Bind();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.16f, 0.16f, 0.125f, 1.0f);
 		texture.Bind();
-		mainScene.m_Registry.each([&](entt::entity entity)
-			{
-				mainScene.m_Registry.get<Renderer>(entity).model.Draw(shaderLibrary.GetShader("StandardShader"));
-			});
-		frameBuffer.UnBind();
-#pragma endregion 
+		renderer.Draw(mainScene, shaderLibrary.GetShader("StandardShader"), frameBuffer);
 
 		ui_interface.End();
 		mainCamera.Input(winManager.GetWindow());

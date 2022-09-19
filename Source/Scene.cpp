@@ -17,6 +17,7 @@ Scene::~Scene()
 
 Entity* Scene::CreateEntity()
 {
+
 	Entity* entity = new Entity(m_Registry.create(), this);
 
 	std::stringstream name;

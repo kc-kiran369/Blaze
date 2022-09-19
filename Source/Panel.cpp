@@ -5,12 +5,7 @@ namespace Blaze
 	namespace UI
 	{
 		Entity* activeEntity = nullptr;
-		entt::entity SelectedEntity = entt::entity(0);
-
-		float max(int v1, int v2)
-		{
-			return (v1 > v2 ? v1 : v2);
-		}
+		entt::entity SelectedEntity = entt::entity(NO_ENTITY);
 
 		bool DrawVec3Control(const char* label, glm::vec3& values, float resetValue, float columnWidth)
 		{
@@ -38,7 +33,10 @@ namespace Blaze
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
 			ImGui::PushFont(boldFont);
 			if (ImGui::Button("X", buttonSize))
+			{
 				values.x = resetValue;
+				valueChanged = true;
+			}
 			ImGui::PopFont();
 			ImGui::PopStyleColor(3);
 
@@ -53,7 +51,10 @@ namespace Blaze
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
 			ImGui::PushFont(boldFont);
 			if (ImGui::Button("Y", buttonSize))
+			{
 				values.y = resetValue;
+				valueChanged = true;
+			}
 			ImGui::PopFont();
 			ImGui::PopStyleColor(3);
 
@@ -68,7 +69,10 @@ namespace Blaze
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
 			ImGui::PushFont(boldFont);
 			if (ImGui::Button("Z", buttonSize))
+			{
 				values.z = resetValue;
+				valueChanged = true;
+			}
 			ImGui::PopFont();
 			ImGui::PopStyleColor(3);
 
@@ -134,7 +138,7 @@ namespace Blaze
 		void LightingPanel(Shader& shader, float ambientColor[4])
 		{
 			ImGui::Begin("Lightning");
-			if (ImGui::TreeNode("Basic")) {
+			if (ImGui::TreeNodeEx("Basic", ImGuiTreeNodeFlags_DefaultOpen)) {
 				if (ImGui::ColorEdit4("Ambient Color", ambientColor, ImGuiColorEditFlags_NoInputs))
 				{
 					shader.SetVec4("_ambientColor", ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
@@ -149,10 +153,9 @@ namespace Blaze
 		{
 			ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_MenuBar);
 			ImGui::BeginMenuBar();
-			ImGui::Text("FPS : %f", winManager.deltaTime());
+			ImGui::Text("%f", winManager.deltaTime());
 			ImGui::EndMenuBar();
-			ImGui::Image((ImTextureID)frameBuffer.GetColorTexture(), ImVec2{ 1280,max(720,ImGui::GetWindowWidth()) });
-			//ImGui::Image((ImTextureID)frameBuffer.GetColorTexture(), ImVec2{ 1280,720 });
+			ImGui::Image((ImTextureID)frameBuffer.GetColorTexture(), ImVec2{ 1280 * 1.7778f,Blaze::Math::Mathf::max<float>(720.0f,(float)ImGui::GetWindowWidth()) });
 			ImGui::End();
 		}
 
@@ -163,16 +166,16 @@ namespace Blaze
 
 			ImGui::Text("Total entities : %d", scene.m_Registry.size());
 
-			if (ImGui::BeginPopupContextWindow(0, ImGuiMouseButton_Right, false))
+			if (ImGui::BeginPopupContextWindow("AddMenu", ImGuiMouseButton_Right, false))
 			{
 				if (ImGui::MenuItem("Empty Entity"))
 				{
 					Entity* temp = scene.CreateEntity();
 				}
-				if (ImGui::MenuItem("Cube")) {}
+				/*if (ImGui::MenuItem("Cube")) {}
 				if (ImGui::MenuItem("Cylinder")) {}
 				if (ImGui::MenuItem("Sphere")) {}
-				if (ImGui::MenuItem("Cone")) {}
+				if (ImGui::MenuItem("Cone")) {}*/
 				if (ImGui::MenuItem("Light"))
 				{
 					Entity* temp = scene.CreateEntity();
@@ -187,7 +190,10 @@ namespace Blaze
 					{
 						if (ImGui::MenuItem(scene.m_Registry.get<Tag>(entity).tag.c_str(), (const char*)0, SelectedEntity == entity, true))
 						{
-							SelectedEntity = entity;
+							if (SelectedEntity != entity)
+								SelectedEntity = entity;
+							else if (SelectedEntity == entity)
+								SelectedEntity = entt::entity(NO_ENTITY);
 						}
 					});
 				ImGui::TreePop();
@@ -210,9 +216,7 @@ namespace Blaze
 			for (auto entity : scene.entities)
 			{
 				if (entity->m_Entity == SelectedEntity)
-				{
 					activeEntity = entity;
-				}
 			}
 			ImGui::Begin("Property");
 			if (activeEntity)
@@ -231,9 +235,14 @@ namespace Blaze
 							activeEntity->GetComponent<Transform>().OnTransformChange(shader);
 						}
 
-						Blaze::UI::DrawVec3Control("Rotation", activeEntity->GetComponent<Transform>().rotation, 0.0f, 100.0f);
+						if (Blaze::UI::DrawVec3Control("Rotation", activeEntity->GetComponent<Transform>().rotation, 0.0f, 100.0f))
+						{
+							auto& mat = activeEntity->GetComponent<Transform>().modelMatrix;
+							mat = glm::rotate(mat, glm::radians(1.0f), activeEntity->GetComponent<Transform>().rotation);
+							activeEntity->GetComponent<Transform>().OnTransformChange(shader);
+						}
 
-						Blaze::UI::DrawVec3Control("Scale", activeEntity->GetComponent<Transform>().scale, 0.0f, 100.0f);
+						Blaze::UI::DrawVec3Control("Scale", activeEntity->GetComponent<Transform>().scale, 1.0f, 100.0f);
 
 						ImGui::Separator();
 					}
@@ -261,9 +270,6 @@ namespace Blaze
 							}
 							ImGui::Separator();
 						}
-						/*ImGui::Text((activeEntity->GetComponent<Renderer>().material.m_MatType ? "Standard" : "Unknown"));
-						ImGui::SliderFloat("Metallic", &activeEntity->GetComponent<Renderer>().material.m_Metallic, 0.0f, 1.0f, "%.2f", 1.0f);
-						ImGui::SliderFloat("Smoothness", &activeEntity->GetComponent<Renderer>().material.m_Smoothness, 0.0f, 1.0f, "%.2f", 1.0f);*/
 					}
 					ImGui::TreePop();
 				}
@@ -277,6 +283,23 @@ namespace Blaze
 						ImGui::Separator();
 						ImGui::TreePop();
 					}
+				}
+
+				if (ImGui::Button("Add Component", ImVec2{ ImGui::GetWindowWidth(),30 }))
+				{
+					ImGui::OpenPopup("AddComp");
+				}
+
+				if (ImGui::BeginPopup("AddComp"))
+				{
+					ImGui::MenuItem("Rigidbody");
+					ImGui::MenuItem("Light");
+					ImGui::EndPopup();
+				}
+
+				if (ImGui::Button("Delete Entity", ImVec2{ ImGui::GetWindowWidth(),25.0f }))
+				{
+					/*activeEntity->DeleteEntity();*/
 				}
 			}
 			ImGui::End();

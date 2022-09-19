@@ -2,10 +2,7 @@
 
 Shader::Shader(const char* vert_path, const char* frag_path)
 {
-	std::string VertexShader = ShaderReader(vert_path);
-	std::string FragmentShader = ShaderReader(frag_path);
-	ID = CreateShader(VertexShader, FragmentShader);
-	glUseProgram(ID);
+	Load(vert_path, frag_path);
 }
 
 void Shader::Load(const char* vert_path, const char* frag_path)

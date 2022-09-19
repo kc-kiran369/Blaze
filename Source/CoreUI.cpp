@@ -1,32 +1,30 @@
 #include"UI/CoreUI.h"
 
-CoreUI::CoreUI()
-{
-
-}
-
 void CoreUI::OnAttach(GLFWwindow* window)
 {
 	ImGui::CreateContext();
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 330");
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	io.ConfigDockingAlwaysTabBar = true;
-	io.IniFilename = "config.ini";
+
+	io = &ImGui::GetIO();
+	style = &ImGui::GetStyle();
+	colors = style->Colors;
+
+	io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io->ConfigDockingAlwaysTabBar = true;
+	io->IniFilename = "config.ini";
 
 	SetDarkThemeColors();
 
 	float fontSize = 15.0f;
-	io.Fonts->AddFontFromFileTTF("Resources/Fonts/Urbanist/Urbanist-Black.ttf", fontSize);
+	io->Fonts->AddFontFromFileTTF("Resources/Fonts/Urbanist/Urbanist-Black.ttf", fontSize);
 	//io.FontDefault = io.Fonts->AddFontFromFileTTF("res/fonts/Mohave-Regular.ttf", fontSize);
-
-	ImGuiStyle& style = ImGui::GetStyle();
+/*
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 		style.WindowRounding = 0.0f;
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-	}
+	}*/
 }
 
 void CoreUI::OnDetach()
@@ -52,8 +50,6 @@ void CoreUI::End()
 
 void CoreUI::SetDarkThemeColors()
 {
-	ImGuiStyle* style = &ImGui::GetStyle();
-	ImVec4* colors = style->Colors;
 
 	colors[ImGuiCol_Text] = ImVec4(1.000f, 1.000f, 1.000f, 1.000f);
 	colors[ImGuiCol_TextDisabled] = ImVec4(0.500f, 0.500f, 0.500f, 1.000f);

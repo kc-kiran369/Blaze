@@ -4,19 +4,12 @@
 #include "glew/glew.h"
 #include "glm/glm.hpp"
 
-struct Vertex
-{
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec3 uv;
-};
-
 class VertexBuffer
 {
 private:
-	unsigned int m_RendererID;
+	uint32_t m_RendererID;
 public:
-	VertexBuffer(unsigned int size, void* data);
+	VertexBuffer(uint32_t size, void* data);
 	~VertexBuffer();
 
 	void Bind();
