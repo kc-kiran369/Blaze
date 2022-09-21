@@ -1,7 +1,8 @@
 #include"ECS/Scene.h"
 #include"ECS/Entity.h"
 
-Scene::Scene()
+Scene::Scene(ShaderLibrary& shaderLib)
+	:m_ShaderLib(shaderLib)
 {
 	Logger::Info("Scene Initialized");
 }
@@ -17,7 +18,6 @@ Scene::~Scene()
 
 Entity* Scene::CreateEntity()
 {
-
 	Entity* entity = new Entity(m_Registry.create(), this);
 
 	std::stringstream name;
@@ -26,6 +26,8 @@ Entity* Scene::CreateEntity()
 	entity->AddComponent<Tag>(name.str());
 	entity->AddComponent<Transform>();
 	entity->AddComponent<Renderer>().model;
+	//entity->AddComponent<Material>();
+	entity->AddComponent<Material>(m_ShaderLib.GetShader("StandardShader"));
 	entities.push_back(entity);
 	return entity;
 }

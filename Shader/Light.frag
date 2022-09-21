@@ -1,6 +1,9 @@
 #version 330 core
 
+uniform float u_Metallic;
+uniform float u_Smoothness;
+
 void main()
 {
-	gl_FragColor = vec4(1.0f,0.0f,0.0f,1.0f);
+	gl_FragColor = vec4(vec3(u_Metallic),1.0f);
 }

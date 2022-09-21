@@ -155,7 +155,7 @@ namespace Blaze
 			ImGui::BeginMenuBar();
 			ImGui::Text("%f", winManager.deltaTime());
 			ImGui::EndMenuBar();
-			ImGui::Image((ImTextureID)frameBuffer.GetColorTexture(), ImVec2{ 1280 * 1.7778f,Blaze::Math::Mathf::max<float>(720.0f,(float)ImGui::GetWindowWidth()) });
+			ImGui::Image((ImTextureID)frameBuffer.GetColorTexture(), ImVec2{ Blaze::Math::Mathf::max<float>(720.0f,(float)ImGui::GetWindowWidth()),(float)ImGui::GetWindowWidth() / 1.7778f });
 			ImGui::End();
 		}
 
@@ -163,19 +163,13 @@ namespace Blaze
 		void HierarchyPanel(Scene& scene)
 		{
 			ImGui::Begin("Hierarchy");
-
 			ImGui::Text("Total entities : %d", scene.m_Registry.size());
-
 			if (ImGui::BeginPopupContextWindow("AddMenu", ImGuiMouseButton_Right, false))
 			{
 				if (ImGui::MenuItem("Empty Entity"))
 				{
 					Entity* temp = scene.CreateEntity();
 				}
-				/*if (ImGui::MenuItem("Cube")) {}
-				if (ImGui::MenuItem("Cylinder")) {}
-				if (ImGui::MenuItem("Sphere")) {}
-				if (ImGui::MenuItem("Cone")) {}*/
 				if (ImGui::MenuItem("Light"))
 				{
 					Entity* temp = scene.CreateEntity();
@@ -270,9 +264,26 @@ namespace Blaze
 							}
 							ImGui::Separator();
 						}
+						if (activeEntity->HasComponent<Material>())
+						{
+							if (ImGui::TreeNodeEx("Material", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_FramePadding))
+							{
+								ImGui::Text("Shader Type : Standard Shader");
+								if (ImGui::ColorEdit4("Albedo", &activeEntity->GetComponent<Material>().m_Albedo.x, ImGuiColorEditFlags_NoInputs))
+								{
+									activeEntity->GetComponent<Material>().UploadToShader();
+								}
+								ImGui::SliderFloat("Metallic", &activeEntity->GetComponent<Material>().m_Metallic, 0.0f, 1.0f, "%.3f", 1.0f);
+								ImGui::SliderFloat("Smoothness", &activeEntity->GetComponent<Material>().m_Smoothness, 0.0f, 1.0f, "%.3f", 1.0f);
+								ImGui::TreePop();
+							}
+							ImGui::Separator();
+						}
 					}
 					ImGui::TreePop();
 				}
+
+
 
 				if (activeEntity->HasComponent<Light>())
 				{

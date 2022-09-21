@@ -30,23 +30,22 @@
 int main(int args, char** argv)
 {
 #pragma region Setup
-	WindowManager winManager; 
+	WindowManager winManager;
 	winManager.OnAttach();
-	CoreUI ui_interface; 
+	CoreUI ui_interface;
 	ui_interface.OnAttach(winManager.GetWindow());
 #pragma endregion 
 
 #pragma region Initilization
-	Scene mainScene;
 	Camera mainCamera(winManager.width, winManager.height, glm::vec3{ 5.0f, 5.0f, -15.0f });
 	ShaderLibrary shaderLibrary;
+	Scene mainScene(shaderLibrary);
 	shaderLibrary.AddShader("StandardShader", "Shader\\standard.vert", "Shader\\standard.frag");
 	shaderLibrary.AddShader("LightShader", "Shader\\standard.vert", "Shader\\Light.frag");
 	Blaze::Rendering renderer;
 	Texture texture("Resources\\Images\\MedievalhouseDiffuse.jpg", 0);
 	float ambientColor[] = { 0.4f,0.4f,0.4f,1.0f };
 	FrameBuffer frameBuffer;
-	Material material(shaderLibrary.GetShader("StandardShader"));
 #pragma endregion
 
 	while (!glfwWindowShouldClose(winManager.GetWindow()))
