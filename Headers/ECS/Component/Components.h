@@ -1,10 +1,10 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
-#include"../Source/Renderer/model.h"
+#include"Renderer/model.h"
 #include"glm/glm.hpp"
 
-#include"../Source/Renderer/Shader.h"
+#include"Renderer/Shader.h"
 
 #pragma region ESSENTIAL
 enum ComponentsTag
@@ -51,7 +51,6 @@ struct Material
 {
 private:
 	Shader* m_Shader;
-
 public:
 	Material() = default;
 	Material(Shader& shader)
@@ -62,7 +61,6 @@ public:
 		m_Emission = 0.0f;
 		m_MatType = MaterialType::STANDARD;
 	}
-
 	~Material()
 	{
 
@@ -76,7 +74,6 @@ public:
 	float m_Metallic;
 	float m_Smoothness;
 	float m_Emission;
-
 
 	void UploadToShader()
 	{
