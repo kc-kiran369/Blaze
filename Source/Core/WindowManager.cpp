@@ -1,9 +1,9 @@
 #include"Core/WindowManager.h"
 
-WindowManager::WindowManager()
+WindowManager::WindowManager(const char* name, uint16_t width, uint16_t height)
 {
 	glfwInit();
-	m_Window = glfwCreateWindow(width, height, "Blaze", nullptr, nullptr);
+	m_Window = glfwCreateWindow(width, height, name, nullptr, nullptr);
 	if (m_Window)
 		Logger::Info("Window initialized");
 	else
@@ -20,9 +20,8 @@ WindowManager::~WindowManager()
 
 void WindowManager::OnAttach()
 {
-	this->SetIcon(this->GetWindow());
-	//glfwMaximizeWindow(this->GetWindow());
-	glfwMakeContextCurrent(this->GetWindow());
+	this->SetIcon();
+	glfwMakeContextCurrent(m_Window);
 	glfwSwapInterval(1);
 	glewInit();
 
@@ -56,7 +55,7 @@ void WindowManager::OnUpdate()
 void WindowManager::OnUpdateComplete()
 {
 	glfwPollEvents();
-	glfwSwapBuffers(this->GetWindow());
+	glfwSwapBuffers(m_Window);
 	m_PreTime = m_CurrTime;
 }
 
@@ -75,15 +74,25 @@ GLFWwindow* WindowManager::GetWindow()
 	return m_Window;
 }
 
-void WindowManager::SetIcon(GLFWwindow* window)
+void WindowManager::SetIcon()
 {
-	GLFWimage images;
-	images.pixels = stbi_load("Resources\\Icon\\Logo_001.png", &images.width, &images.height, 0, 4);
-	glfwSetWindowIcon(window, 1, &images);
-	stbi_image_free(images.pixels);
+	/*glfwimage images;
+	images.pixels = stbi_load("resources\\icon\\logo_001.png", &images.width, &images.height, 0, 4);
+	glfwsetwindowicon(m_window, 1, &images);
+	stbi_image_free(images.pixels);*/
 }
 
 void WindowManager::ToggleSystemConsole()
 {
 	ShowWindow(GetConsoleWindow(), (IsWindowVisible(GetConsoleWindow()) ? SW_HIDE : SW_SHOW));
+}
+
+uint32_t WindowManager::GetWidth()
+{
+	return m_Width;
+}
+
+uint32_t WindowManager::GetHeight()
+{
+	return m_Height;
 }

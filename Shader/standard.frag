@@ -12,13 +12,13 @@ uniform vec4 u_AlbedoColor;
 
 void main()
 {
-//	vec3 lightDir = normalize(_position - lightPos);
-//	float diffuse = max(dot(lightDir,normalize(_normal)),0.0f);
-//	FragColor = (_ambientColor+(diffuse*lightIntensity))* texture(_texture,_texCoord) ;
-//	if(_texture!=NULL)
-//	{
-//
-//	}
-//	FragColor = texture(_texture,_texCoord);
+	vec3 lightDir = normalize(_position - lightPos);
+	float diffuse = max(dot(lightDir,normalize(_normal)),0.0f);
+	FragColor = (_ambientColor+(diffuse*lightIntensity))* texture(_texture,_texCoord) ;
+	if(_texture!=NULL)
+	{
+
+	}
+	FragColor = texture(_texture,_texCoord);
 	FragColor = u_AlbedoColor;
 }

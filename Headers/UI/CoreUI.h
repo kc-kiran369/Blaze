@@ -8,10 +8,10 @@
 class CoreUI
 {
 public:
-	CoreUI() = default;
+	CoreUI(GLFWwindow* window);
 	~CoreUI() = default;
 
-	void OnAttach(GLFWwindow* window);
+	void OnAttach();
 	void OnDetach();
 
 	void Begin();

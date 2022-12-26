@@ -1,15 +1,18 @@
 #include"UI/CoreUI.h"
 
-void CoreUI::OnAttach(GLFWwindow* window)
+CoreUI::CoreUI(GLFWwindow* window)
 {
 	ImGui::CreateContext();
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init("#version 330");
+	ImGui_ImplOpenGL3_Init();
 
 	io = &ImGui::GetIO();
 	style = &ImGui::GetStyle();
-	colors = style->Colors;
+	colors = style->Colors;;
+}
 
+void CoreUI::OnAttach()
+{
 	io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io->ConfigDockingAlwaysTabBar = true;
 	io->IniFilename = "config.ini";

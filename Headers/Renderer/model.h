@@ -7,16 +7,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#ifndef STBI_INCLUDE_STB_IMAGE_H
-#include "stb_image/stb_image.h"
-#endif
-
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
 #include"mesh.h"
-#include"Texture.h"
 #include"Shader.h"
 
 #include <GLEW/glew.h>
